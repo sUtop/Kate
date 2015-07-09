@@ -1,0 +1,10 @@
+dispatcher.cpp
+dispatcher.h
+main.cpp
+Makefile
+modules/msg/msg.cpp
+modules/msg/msg.h
+dispatcher.cpp
+dispatcher.h
+main.cpp
+Kate.conf
