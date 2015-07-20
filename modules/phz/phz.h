@@ -3,11 +3,20 @@
 #ifndef __PHZ_H
 #define __PHZ_H
 
-#include <iostream>
-#include <thread>
+#include "lib.h"
 
 namespace phz{
     void start();
 }
+
+class Physics: public module{
+    
+    
+    
+public:
+    Physics();
+    ~Physics();
+    
+};
 
 #endif

@@ -1,13 +1,19 @@
 
+PROG = Kate
+OBJS = main.o dispatcher.o msg.o bd.o inout.o phz.o
 CC=g++
+CXX = $(CC)
 DEBUG=-g
-LFLAGS = -Wall -std=c++14 -lpthread $(DEBUG) # -D_REENTRANT 
+INCLUDES = -I ./
+LFLAGS = -Wall -std=c++14 -lpthread $(INCLUDES) $(DEBUG) # -D_REENTRANT 
 CFLAGS = -c $(LFLAGS)
 
-all: Kate
+all: ${PROG}
 
-Kate: main.o dispatcher.o msg.o bd.o inp.o out.o phz.o
-	$(CC) $(LFLAGS) main.o dispatcher.o msg.o bd.o inp.o out.o phz.o -o Kate
+${PROG}: $(OBJS)
+	$(CXX) $(INCLUDES) -o $(PROG) $(OBJS) $(LIBS)
+#Kate: main.o dispatcher.o msg.o bd.o inp.o out.o phz.o
+#	$(CC) $(LFLAGS) main.o dispatcher.o msg.o bd.o inp.o out.o phz.o -o Kate
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp
@@ -21,11 +27,8 @@ msg.o: modules/msg/msg.cpp
 bd.o: modules/bd/bd.cpp
 	$(CC) $(CFLAGS) -c modules/bd/bd.cpp
 
-inp.o: modules/inp/inp.cpp
-	$(CC) $(CFLAGS) -c modules/inp/inp.cpp
-
-out.o: modules/out/out.cpp
-	$(CC) $(CFLAGS) -c modules/out/out.cpp
+inout.o: modules/inout/inout.cpp
+	$(CC) $(CFLAGS) -c modules/inout/inout.cpp
 
 phz.o: modules/phz/phz.cpp
 	$(CC) $(CFLAGS) -c modules/phz/phz.cpp

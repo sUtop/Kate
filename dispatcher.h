@@ -7,21 +7,26 @@
 #include <map>
 #include <list>
 #include <string>
-
+#include "lib.h"
 
 // Модуль диспетчера не обязан знать где и какие модули лежат
 // однако как это сделать пока непонятно. Поэтому
 // временное решение - прямое включение модулей.
 #include "modules/msg/msg.h"
+extern MessageDispeather *messager;
 #include "modules/bd/bd.h"
-#include "modules/inp/inp.h"
-#include "modules/out/out.h"
+extern DataBase *database;
+#include "modules/inout/inout.h"
+extern InputOutput *inputoutput;
 #include "modules/phz/phz.h"
+extern Physics *physics;
+
 
 class dispatcher{
     //	Thread* Th;
-    std::map<std::string,std::thread*> threads;    // Список потоков?
-    
+    std::map<std::string,std::thread*> threads;     // Список потоков
+    std::map<std::string,module*> modules;          // Классы потоков
+//    messagelist* msglist;                           // Структура с сообщениями - в родительском классе
     //	Mem* M;
     //	char* reserv;
 
@@ -48,15 +53,9 @@ public:
     //< Один тик всех процессов
     
 private:
-    std::thread* parser(std::string);
+    std::thread* parserModules(std::string);
+    void parserMessages(std::string);
     //< Поиск нужного процесса. Возвращает указатель на процесс в случае успеха и 0 иначе.
 };
-
-//class threadable{
-//    virtual threadable();
-//    virtual ~threadable();
-//    
-//};
-
 
 #endif

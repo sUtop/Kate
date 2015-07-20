@@ -14,17 +14,17 @@ int ReadConfig(std::string is = ""){
     std::ifstream ConfigFile;
     ConfigFile.open(tmp);
     
+    std::string line="";
     if(ConfigFile){
-        while(tmp!=""){
-//        std::cout<<tmp<<"\n";   
-        getline(ConfigFile, tmp);
-        to_start.push_back(tmp);
-    /* TODO Обработка конфигурационного файла.*/};
+        while(getline(ConfigFile, line)){
+        if(!line.empty() && line[0] != '#') to_start.push_back(line);
+    /* TODO Обработка конфигурационного файла.*/
+        };
     };
     ConfigFile.close();
-    std::list<std::string>::const_iterator i = to_start.begin();
-    for(;i!=to_start.end();i++)
-        std::cout<<":"<<*i<<":"<<"\n";
+//    std::list<std::string>::const_iterator i = to_start.begin();
+//    for(;i!=to_start.end();i++)
+//        std::cout<<":"<<*i<<":"<<"\n";
     
     return 1;
 };

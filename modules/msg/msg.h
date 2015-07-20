@@ -3,27 +3,29 @@
 #ifndef __MSG_H
 #define __MSG_H
 
-#include <iostream>
 #include <mutex>
 #include <thread>
-#include <atomic> // !!! TODO добавить 
+#include <atomic> // !!! TODO добавить атомарность посылки сообщений
+
+#include "lib.h"
 
 namespace msg{
     void start();
     
 }
 
+class MessageDispeather: public module{
 
-class message{
-// Класс сообщения определяется в диспетчере или в дополнительной библиотеке 
-// так как должен быть доступен всем модулям    
-};
 
-class messageDispeather{
-    std::mutex* mutex_list;
     
 public:
-    int send(message* (*from)(),void (*to)(message*));
+//    msgertype 
+//    Messager
+    MessageDispeather();
+    ~MessageDispeather();
+    
+//    int send(messagelist* (*from)(),void (*to)(messagelist*));
+    
     // для отправки сообщения вызывается send
     // в качестве параметров должны передаваться функции метода отправителя
     // и метода получателя (функции отправки и распаковки сообщения соответственно)

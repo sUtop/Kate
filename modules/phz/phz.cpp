@@ -1,12 +1,24 @@
 #include "phz.h"
 
+Physics* physics = new Physics();
+
 void phz::start(){
-    std::cout<<":PHZ started\n";
+//    std::cout<<":PHZ started\n";
     
     for (int i = 0; i < 40; ++i)
     {
         std::string str = "::PHZ";
-        std::cout<<str<<"\n";
+        physics->printLogFile(str+ "\n");
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
+
+Physics::Physics(){
+    name = "phz";
+    logFileName = ".Physics_log";
+    openLogFile();
+};
+
+Physics::~Physics(){
+    name = "NULL";
+};
