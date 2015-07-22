@@ -17,6 +17,8 @@ public:
     Physics();
     ~Physics();
     
+    void tic();
+    
 };
 
 #endif

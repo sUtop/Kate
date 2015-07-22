@@ -5,7 +5,10 @@
 
 #include "dispatcher.h"
 
-std::list<std::string> to_start;
+inputString to_start;
+
+//char** argv;
+//int argc;
 
 int ReadConfig(std::string is = ""){
     std::string tmp = is;
@@ -30,10 +33,14 @@ int ReadConfig(std::string is = ""){
 };
 
 int main(int argc,char** argv){
+//    mainargv = argv;
+//    mainargc = argc;
+
     std::cout<<" Kate started with params :\""<<argc<<"\""<<"\n";
     for(int i=0;i<argc;i++)
         std::cout<<"=\""<<argv[i]<<"\"\n";
     
+
     if(ReadConfig())
     {
         dispatcher* dsp = new dispatcher(to_start);

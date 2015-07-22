@@ -3,9 +3,9 @@
 #ifndef __MSG_H
 #define __MSG_H
 
-#include <mutex>
+#include <mutex>    // остановка потоков при одновременном использовании
 #include <thread>
-#include <atomic> // !!! TODO добавить атомарность посылки сообщений
+//#include <atomic> // !!! TODO добавить атомарность посылки сообщений
 
 #include "lib.h"
 
@@ -16,6 +16,7 @@ namespace msg{
 
 class MessageDispeather: public module{
 
+    std::clock_t curr_tic;
 
     
 public:
@@ -23,6 +24,7 @@ public:
 //    Messager
     MessageDispeather();
     ~MessageDispeather();
+    void tic();
     
 //    int send(messagelist* (*from)(),void (*to)(messagelist*));
     

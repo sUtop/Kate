@@ -13,6 +13,8 @@
 #include <queue>
 #include <fstream>
 #include <thread>
+#include <ctime>    // Для выработки тиков - все модули их получают
+#include <mutex>
 
 
 #define _LIBCPP_IOSTREAM // Запрет подключать <iostream>  в модулях
@@ -62,13 +64,15 @@
 //    }
 //};
 
+typedef void* dataType;
+
 struct message{
     // Тип списка сообщений - неблокирующие очереди
     std::string from;
     std::string to;
     std::int8_t ID;
     std::int32_t size;
-    void* data;
+    dataType data;
     message(const message &msg){
         from = msg.from;
         to   = msg.to;
@@ -77,6 +81,8 @@ struct message{
         data = msg.data;
         
     }
+    message(std::string from_, std::string to_, std::int8_t ID_, std::int32_t size_,void* data_):
+            from(from_),to(to_),ID(ID_),size(size_),data(data_){};
 };
 
 struct Messager{
@@ -91,8 +97,8 @@ public:
     message* get(){ 
         message* output = 0;
         lock.lock();
-        if(!list.empty()){
-        output = new message(list.back()); // Конструктор копирования
+        if(!empty()){
+        output = new message(list.front()); // Конструктор копирования
         list.pop();}
         lock.unlock();
         return output;
