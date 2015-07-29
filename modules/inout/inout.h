@@ -4,19 +4,21 @@
 #define __INOUT_H
 #include "lib.h"
 
+#include "math.h"
+
+
 namespace inout{
+    void start_main();
     void start();
 }
 
 class InputOutput: public module{
     
-
-    
 public:
     InputOutput();
     ~InputOutput();
         
-    void tic();
+static void update();
 };
 
 //#include "widget.h"

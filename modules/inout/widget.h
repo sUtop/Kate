@@ -28,10 +28,9 @@ struct vector{
 
 class Widget : public QGLWidget
 {
+    Q_OBJECT
 public:
     Widget(QWidget *parent = 0);
-
-
 protected:
     void initializeGL();
     void resizeGL(int nWidth, int nHeight);
@@ -50,7 +49,7 @@ private:
     QPoint mousePos;
     void drawAxis();
     void drawCube(vector v,float size,QColor clr);
-    void drawCubeGLU(vector v,float size,QColor clr);
+//    void drawCubeGLU(vector v,float size,QColor clr); 
     // Вектор дальней точки, размер и ось по которой строим
     void drawRectangle(vector v,float size,char axis,int tap);
     void drawRectangleTop(vector v,float size,char axis);
@@ -66,7 +65,8 @@ private:
     QColor c;
     QString strText;
 
-
+public slots:
+    void getmail();
 
 
 };

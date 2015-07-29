@@ -87,8 +87,8 @@ struct message{
 
 struct Messager{
 // Список сообщений между двумя потоками
-    std::mutex          lock; // локатор 
 private:
+    std::mutex          lock; // локатор 
     std::queue<message> list; // очередь
 
 public:

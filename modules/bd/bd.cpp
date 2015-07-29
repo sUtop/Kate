@@ -38,7 +38,8 @@ void DataBase::tic(){
     message* tic_msg = 0;
     std::clock_t* _tic = 0;
     while(true){
-        if(tic_msg = messagelist["tic_bd"]->get()){
+        tic_msg = messagelist["tic_bd"]->get();
+        if(tic_msg){
             printLogFile("get tic \n");
             _tic = static_cast<std::clock_t*>(tic_msg->data);
             printLogFile("cur_tic : " + std::to_string(*_tic) + "\n");

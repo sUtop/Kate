@@ -584,3 +584,9 @@ void Widget::keyReleaseEvent(QKeyEvent *ke)
    updateGL();
    }
 
+
+void Widget::getmail(){
+   updateGL();
+   keyb.xRot *= 1.0001;
+};
+

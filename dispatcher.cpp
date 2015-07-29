@@ -84,7 +84,9 @@ int dispatcher::addThread(dispatcher::returnMod mod){
         }
         else if(mod.namemod == "inout") {
             std::cout<<mod.namemod<<"inout to run \n";
-            torun[mod.namemod] = inout::start;
+            torun[mod.namemod] = inout::start_main;
+            runmodule = new std::thread(inout::start);
+            modules[mod.namemod]=dynamic_cast<module*>(inputoutput);
         }
         else if(mod.namemod == "phz") {
             runmodule = new std::thread(phz::start);
@@ -185,7 +187,10 @@ int dispatcher::addMess(dispatcher::returnMes mes){
          }else if (mes.tomod == "all"){ // Групповая рассылка
 
          }
+         }else if(mes.tomod == "inout"){
+             messager->pf_tic[mes.nammes] = inputoutput->update; //reinterpret_cast<PFunction>(*inputoutput->tic);
          }else{
+             
             std::cout<<"!!! message \""<<mes.frommod + "->" + mes.tomod + ":" + mes.nammes<<"\" cant create \n";                 
          };
         // Потом будет вызываться:

@@ -14,12 +14,15 @@ namespace msg{
     
 }
 
+typedef void (*PFunction) ();
+typedef std::map<std::string,PFunction> pftype;
+
 class MessageDispeather: public module{
 
-    std::clock_t curr_tic;
-
+    std::clock_t    curr_tic;
     
 public:
+    pftype  pf_tic; //< Список функций для запуска по тику
 //    msgertype 
 //    Messager
     MessageDispeather();

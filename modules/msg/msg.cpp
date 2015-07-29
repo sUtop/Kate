@@ -13,17 +13,12 @@ void msg::start(){
         messager->printLogFile(str + std::to_string(i) +  "\n");
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
-
-    
     while(true){
         if(messager){
             messager->tic();
         }
         else return;
-        
     }
-
-    
 }
 
 
@@ -50,6 +45,10 @@ void MessageDispeather::tic(){
         printLogFile("Send tic N" + std::to_string(*_tic) + "\n");
 //            messagelist["tic_inout"]->put(tic_msg);
 //            messagelist["tic_phz"]->put(tic_msg);
+        
+//        pf_tic["tic_inout"]();
+        
+        
     }
     else  std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
