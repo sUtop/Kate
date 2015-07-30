@@ -68,4 +68,5 @@ include modules/phz.mk
 
 .PHONY : clean
 clean:
-	rm -rf obj/ bin/ *.gnu #*.o *.app *.dylib *.a lib*.so* .*log Kate  *.gnu 
+	rm -rf obj/ bin/ *.gnu 
+#*.o *.app *.dylib *.a lib*.so* .*log Kate  *.gnu 
