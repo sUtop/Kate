@@ -49,7 +49,7 @@ obj/dispatcher.o: dispatcher.cpp
 #phz.o: modules/phz/phz.cpp
 #	$(CC) $(CFLAGS) modules/phz/phz.cpp
 
-modules: obj/msg.o obj/bd.o obj/libinout.a obj/phz.o
+modules: obj/msg.o obj/bd.o obj/libinout.a obj/phz.o bin/ai
 
 obj/msg.o:
 include modules/msg.mk
@@ -65,6 +65,9 @@ include modules/inout.mk
 obj/phz.o:
 include modules/phz.mk
 #	make -f modules/phz.mk
+
+bin/ai:
+include modules/ai.mk
 
 .PHONY : clean
 clean:

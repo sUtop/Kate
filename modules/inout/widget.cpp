@@ -575,18 +575,18 @@ void Widget::wheelEvent(QWheelEvent *we)
 void Widget::keyPressEvent(QKeyEvent *ke)
 {
    keyb.keyPressEvent(ke);
-   updateGL();
+//   updateGL();
    };
 
 void Widget::keyReleaseEvent(QKeyEvent *ke)
 {
    keyb.keyReleaseEvent(ke);
-   updateGL();
+//   updateGL();
    }
 
 
 void Widget::getmail(){
    updateGL();
-   keyb.xRot *= 1.0001;
+   keyb.xRot *= 1.001;
 };
 

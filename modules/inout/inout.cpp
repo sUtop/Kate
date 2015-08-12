@@ -7,7 +7,7 @@ InputOutput *inputoutput = new InputOutput();
 char* argv[] = {"./Kate",""};
 int argc = 1;
 
-QApplication MainApp(argc,argv); // глобальные в lib.h
+QApplication MainApp(argc,argv);
 Widget w(0);
 
 
@@ -20,27 +20,19 @@ void inout::start_main(){
     MainApp.exec();
     inputoutput->printLogFile("exec \n");
     
-    
 };
 
 
 
 void inout::start(){
-
-//    inputoutput->printLogFile("create QApplication \n");
-//    w.show();
-//    inputoutput->printLogFile("show widget \n");
-//
-//    MainApp.exec();
-//    inputoutput->printLogFile("exec \n");
     
     sender sendarman;
     sendarman.addconnect(w);
-    for (int i = 0; i < 300; ++i)
+    for (int i = 0; i < 3000; ++i)
     {
         std::string str = "::INOUT  ";
         inputoutput->printLogFile(str + std::to_string(i) +  "\n");
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
         sendarman.sendtic();
     }
     
@@ -60,46 +52,7 @@ InputOutput::~InputOutput(){
 
 void InputOutput::update(){
 
-//    message* tic_msg = 0;
-//    std::clock_t* _tic = 0;
     inputoutput->printLogFile("get tic \n");
-    
-//    w.updateGL();
-    
-//    while(true){
-//        if(tic_msg = messagelist["tic_inout"]->get()){
-//            printLogFile("get tic \n");
-//            _tic = static_cast<std::clock_t*>(tic_msg->data);
-//            printLogFile("cur_tic : " + std::to_string(*_tic) + "\n");
-//            delete _tic; // Освобождение области памяти *data
-//            delete tic_msg; // Освобождение области памяти сообщения
-//        }
-//        else  std::this_thread::sleep_for(std::chrono::milliseconds(20));
-
-    
-//    	auxInitDisplayMode(AUX_RGB);
-//	auxInitPosition (0, 0, 500, 500);
-//	auxInitWindow ("Step1");
-        
-//        int argc = 1; 
-//        typedef char** ppchar;
-//        ppchar argv = reinterpret_cast<ppchar>(new char[2][10]);
-//        argv = new *char[1];
-//        argv[0] = "./Kate";
-//        argv[1] = "";
-
-//        char *argv_[] = {"./Kate",""};
-//      
-    
-    
-//    NSApplicationMain(mainargc, (const char **)mainargv);
-//        printLogFile(std::to_string(mainargc) + "   " + mainargv[0] + "\n");
-        
-// QMessageBox msgBox;
-// msgBox.setText("The document has been modified.");
-// msgBox.exec();
-        
-//    }
     
 };
 
