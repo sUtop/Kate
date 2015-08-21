@@ -18,7 +18,7 @@ public:
     InputOutput();
     ~InputOutput();
         
-static void update();
+    void tic();
 };
 
 //#include "widget.h"

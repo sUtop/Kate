@@ -1,6 +1,3 @@
-// XP
-//#include <bitset>
-
 #include "dispatcher.h"
 
 //dispatcher::dispatcher(int argc,char** argv){
@@ -61,7 +58,7 @@ int dispatcher::stop(){
 //    for(;j!=threads.end();j++){
 //        stop(j->first);
 //    };
-//    return 0;
+    return 0;
     
 };
 
@@ -76,21 +73,21 @@ int dispatcher::addThread(dispatcher::returnMod mod){
     std::thread* runmodule = 0;
     if(mod.namemod == "msg") {
             runmodule = new std::thread(msg::start);
-            modules[mod.namemod]=dynamic_cast<module*>(messager);
+            modules[mod.namemod]=messager;
         }//reinterpret_cast
         else if(mod.namemod == "bd") {
             runmodule = new std::thread(bd::start);
-            modules[mod.namemod]=dynamic_cast<module*>(database);
+            modules[mod.namemod]=database;
         }
         else if(mod.namemod == "inout") {
             std::cout<<mod.namemod<<"inout to run \n";
             torun[mod.namemod] = inout::start_main;
             runmodule = new std::thread(inout::start);
-            modules[mod.namemod]=dynamic_cast<module*>(inputoutput);
+            modules[mod.namemod]=inputoutput;
         }
         else if(mod.namemod == "phz") {
             runmodule = new std::thread(phz::start);
-            modules[mod.namemod]=dynamic_cast<module*>(physics);
+            modules[mod.namemod]=physics;
         }
     
     if(runmodule){
@@ -153,7 +150,7 @@ dispatcher::returnMod dispatcher::parserModules(std::string inp){
         int number = std::stoi(strnumber);
         
 
-        if( strnumber.length()<0 || number < 0){ return output; }; // Не нашли количество процессов
+        if( strnumber.length()<=0 || number < 0){ return output; }; // Не нашли количество процессов
             
         output.namemod = module;
         output.number = number;
@@ -169,46 +166,37 @@ dispatcher::returnMod dispatcher::parserModules(std::string inp){
 
 
 int dispatcher::addMess(dispatcher::returnMes mes){
-        // варианты реализации : 
-        // messager.addmessagelist(modules[frommodule].put,modules[tomodule].get,namemess);
-        // или
-        // messager.addmessage(modules[frommodule].put,namemess)
-        // messager.resivemessage(modules[tomodule].get,namemess)
-        // или 
+    
+    std::cout<<"dispatcher::addMess => "<<mes.frommod + "->" + mes.tomod + ":" + mes.nammes<<"\" try \n";
 
-         Messager* msg = new Messager(mes.nammes);
-         if(modules[mes.frommod] && messager){
-         if(modules[mes.tomod]){
-            modules[mes.frommod]->messagelist[mes.nammes] = msg;
-            modules[mes.tomod]->messagelist[mes.nammes] = msg;
-            if(mes.frommod!="msg")
-                messager->messagelist[mes.frommod + "->"+ mes.tomod + ":" + mes.nammes] = msg;
-            std::cout<<"message \""<<mes.frommod + "->" + mes.tomod + ":" + mes.nammes<<"\" added \n";
-         }else if (mes.tomod == "all"){ // Групповая рассылка
+    if(modules[mes.frommod] && messager){
+     if(modules[mes.tomod]){
+        Messager* msg = new Messager(mes.nammes);
+        modules[mes.frommod]->messagelist[mes.nammes] = msg;
+        modules[mes.tomod]->messagelist[mes.nammes] = msg;
+        std::cout<<"dispatcher::addMess message \""<<mes.frommod + "->" + mes.tomod + ":" + mes.nammes<<"\" added \n";
+     }else if (mes.tomod == "all"){ // Групповая рассылка
 
-         }
-         }else if(mes.tomod == "inout"){
-             messager->pf_tic[mes.nammes] = inputoutput->update; //reinterpret_cast<PFunction>(*inputoutput->tic);
-         }else{
-             
-            std::cout<<"!!! message \""<<mes.frommod + "->" + mes.tomod + ":" + mes.nammes<<"\" cant create \n";                 
-         };
-        // Потом будет вызываться:
-        //   module.messagelist["mesname"].put(message) в коде будет выглядить  messagelist["mesname"].put(message)
-        // и module.messagelist["mesname"].get(message)                         messagelist["mesname"].get(message)
-        // + module.messagelist["mesname"].isempty()                            messagelist["mesname"].isempty()
-        // + module.messagelist["mesname"].clear                                messagelist["mesname"].clear()
-        // 
-        //    msgertype* msg = new msgertype("tic") ??? или msg = messager.tic
-        //    std::map<std::string,std::thread*>::iterator j = threads.begin();
-        //    for(;j!=threads.end();j++){
-        //        j->messagelist["tic"] = msg;
+     }
+     }
+//         else if(mes.tomod == "inout"){
+//            messager->pf_tic[mes.nammes] = inout::update; //reinterpret_cast<PFunction>(*inputoutput->tic);
+////             messager->pf_tic[mes.nammes] = modules[mes.tomod].tic;//inputoutput->update;
+//                     //dynamic_cast<PFunction>((*inputoutput).update); //reinterpret_cast<PFunction>(*inputoutput->tic);
+//         } // http://rsdn.ru/article/cpp/fastdelegate.xml
+     else{
 
-//            modules[frommodule]->openLogFile();
-
+        std::cout<<"dispatcher::addMess !!! message \""<<mes.frommod + "->" + mes.tomod + ":" + mes.nammes<<"\" can\'t create \n";                 
+     };
+    // Потом будет вызываться:
+    //   module.messagelist["mesname"].put(message) в коде будет выглядить  messagelist["mesname"].put(message)
+    // и module.messagelist["mesname"].get(message)                         messagelist["mesname"].get(message)
+    // + module.messagelist["mesname"].isempty()                            messagelist["mesname"].isempty()
+    // + module.messagelist["mesname"].clear                                messagelist["mesname"].clear()
+    // 
 
     return 0;
-};
+}; // dispatcher::addMess(dispatcher::returnMes mes)
 
 dispatcher::returnMes dispatcher::parserMessages(std::string inp){
     returnMes output = {"","","",-1};

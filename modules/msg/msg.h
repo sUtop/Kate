@@ -19,8 +19,8 @@ typedef std::map<std::string,PFunction> pftype;
 
 class MessageDispeather: public module{
 
-    std::clock_t    curr_tic;
-    
+//    std::clock_t    curr_tic;
+    std::time_t curr_tic;
 public:
     pftype  pf_tic; //< Список функций для запуска по тику
 //    msgertype 

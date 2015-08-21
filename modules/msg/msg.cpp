@@ -4,15 +4,8 @@ MessageDispeather* messager = new MessageDispeather();
 
 
 void msg::start(){
-//    std::cout<<":MSG started\n";
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::this_thread::sleep_for(std::chrono::seconds(10));
     
-    for (int i = 0; i < 3; ++i)
-    {
-        std::string str = "::MSG  ";
-        messager->printLogFile(str + std::to_string(i) +  "\n");
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    }
     while(true){
         if(messager){
             messager->tic();
@@ -26,7 +19,8 @@ MessageDispeather::MessageDispeather(){
     name = "msg";
     logFileName = ".Message_Dispeather_log";
     openLogFile();
-    curr_tic = std::clock();
+//    curr_tic = std::clock();
+    std::time(&curr_tic);
  };
 
 
@@ -35,23 +29,34 @@ MessageDispeather::~MessageDispeather(){
 };
 
 void MessageDispeather::tic(){
-    if(std::clock() - curr_tic > 1000){
-        curr_tic += 1000;
-        std::clock_t* _tic = new std::clock_t(std::clock()); // Область памяти *data
+    std::time_t time;
+//    std::TDateTime;
+    std::time(&time);
+    if( time > curr_tic ){
+        curr_tic++; //std::chrono::seconds(1);//500000; // минимум - 1 секунда
 
-        message tic_msg("msg","ANY",0,sizeof(std::clock_t*),
-                static_cast<dataType>(_tic));
-        messagelist["tic_bd"]->put(tic_msg);
-        printLogFile("Send tic N" + std::to_string(*_tic) + "\n");
-//            messagelist["tic_inout"]->put(tic_msg);
-//            messagelist["tic_phz"]->put(tic_msg);
+       
+        for(msgertype::const_iterator i=messagelist.begin();i!=messagelist.end();i++){
+                std::clock_t* _tic = new std::clock_t(std::clock()); // Область памяти *data
+                message tic_msg("msg","ANY",0,sizeof(std::clock_t*),static_cast<dataType>(_tic));
+                if(i->first == "tic_inout"){
+                    for(;i->second->put(tic_msg);){}; // || i->first == "tic_phz"
+//                    printLogFile("Send tic inout to \t " + std::to_string(long (i->second)) + "\n");
+                }
+                if(i->first == "tic_bd"){
+                    for(;i->second->put(tic_msg);){}; // Пока не освободится
+//                    printLogFile("Send tic bd to  \t " + std::to_string(long (i->second)) + "\n");                    
+                }
+        }
         
-//        pf_tic["tic_inout"]();
-        
-        
+//        printLogFile(std::to_string(pf_tic.size()) + " size \n");
+        for(std::map<std::string,PFunction>::const_iterator i = pf_tic.begin();i!=pf_tic.end();i++)
+        {
+            printLogFile((i->first) + " sended \n");
+            i->second();
+        }
     }
     else  std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
 };
 
             //struct message{
@@ -62,7 +67,7 @@ void MessageDispeather::tic(){
             //    std::int32_t size;
             //    void* data;
     
-            //# Тики - 1/32 секунды
+            //# Тики - 1 секунда
             //msg:"msg"->"bd":"tic_bd"
             //msg:"msg"->"inout":"tic_inout"
             //msg:"msg"->"phz":"tic_phz"

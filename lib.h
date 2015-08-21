@@ -19,50 +19,7 @@
 
 #define _LIBCPP_IOSTREAM // Запрет подключать <iostream>  в модулях
 
-//struct queItem{
-//    void* data;
-//    queItem* next;
-//    queItem(queItem* message = 0)
-//    {
-//        data = message;
-//        next = 0;
-//    }
-//};
-
-//class message{
-//    // Тип списка сообщений - неблокирующие очереди
-//    std::string from;
-//    std::string to;
-//    std::int8_t ID;
-//    std::int32_t size;
-//    // очередь:  Каждый элемент ссылается на следующий, отправитель 
-//    // кладет в last, получатель берет из first
-//    atomic<queItem*>    first;
-//    atomic<queItem*>    last;
-//public:
-//    message(std::int32_t size_):size(size_){
-//          first = new queItem();
-//          last = first;
-//          // from = 
-//          // to = 
-//    };
-//    void* get(){
-//        if (first == last || first.next == 0){ return 0;}
-//        void* mess = first.next.data;
-//        first = first.next;
-//        return mess;
-//    };
-//    std::int8_t put(void* data){
-//          last.next = new queItem(data);
-//          if(last.next) last = last.next;
-//          else return 1; // ERROR - no memmory !!!
-//          return 0;
-//    };
-//    
-//    std::int8_t empty(){
-//        return first != last;
-//    }
-//};
+// попробовать сделать через неблокирующие очереди
 
 typedef void* dataType;
 
@@ -96,22 +53,25 @@ public:
     
     message* get(){ 
         message* output = 0;
-        lock.lock();
-        if(!empty()){
-        output = new message(list.front()); // Конструктор копирования
-        list.pop();}
-        lock.unlock();
+        if(lock.try_lock()){
+            if(!empty()){
+            output = new message(list.front()); // Конструктор копирования
+            list.pop();}
+            lock.unlock();
+        }else return 0;
         return output;
     };
     
     std::int8_t  put(const message &msg){
-        lock.lock();
+        if(lock.try_lock()){
         list.push(msg);
         lock.unlock();
+        }else
+            return 1;
         return 0;
     };
     std::int8_t  empty()// Проверка на наличие сообщений
-    {return list.empty();};       // 1 если не пуст, 0 если пуст
+    {return list.empty();};       // 1 если пуст, 0 если не пуст
     
     std::int32_t size(){return list.size();};
     
@@ -130,7 +90,7 @@ struct module{
     msgertype messagelist; // Список сообщений для этого модуля
     
     module(){name = "NULL";logFileName = ".test_log_file";};
-    ~module(){};
+    virtual ~module(){};
     
     void openLogFile(){
         logFile.open(logFileName,std::ios_base::out | std::ios_base::ate);
@@ -146,7 +106,7 @@ struct module{
     };
     //> Закрытие лог-файла
     
-    virtual void tic(){};
+    virtual void tic() = 0;  // абстрактный класс
     
     std::fstream    logFile;
     std::string     logFileName;

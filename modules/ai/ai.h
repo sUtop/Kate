@@ -19,6 +19,7 @@
 #include <cmath>
 #include <random>
 #include <climits>
+#include <fstream>
 
 #ifndef LOW_MEM
 typedef long double ldouble;
@@ -104,7 +105,6 @@ class NeuralLayer{
     bool is_last;               //< признак последнего слоя - нейроны не содержат синапсов.
     std::vector<Neuron> Layer;  //< Список нейронов в слое
     std::vector<ldouble> sigmas;           // Полученные сигмы - для корректировки слоя
-    
 public:
     NeuralLayer(int dem_,     int nextdem_,   int layer_,Random *rnd,bool is_last = false);
 //    std::vector<ldouble> step(std::vector<ldouble>);
@@ -117,6 +117,8 @@ public:
     std::vector<ldouble> inputs();
     
     void print();
+    
+    void save(std::fstream logFile);
     
 }; // struct NeuralLay
 
@@ -151,9 +153,6 @@ class Result{
 public:
     Result(NeuralNetwork *NN);  // Прохождение сетью тестовых заданий
 };// class Result
-
-
-
 
 
 #endif	/* AI_H */

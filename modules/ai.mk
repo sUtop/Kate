@@ -5,14 +5,13 @@
 ## Makefile created by Oracle Solaris Studio.
 ##
 
-LFLAGS += -Wall -Ofast -std=c++11 -I./ -pipe -O2 -lpthread $(INCLUDES) $(DEBUG) # -D_REENTRANT 
-CFLAGS = -c $(LFLAGS)
+LFLAGS_AI = -Wall -Ofast -std=c++11 -I./ -pipe -lpthread $(INCLUDES) $(DEBUG) # -D_REENTRANT 
 
 bin/ai: bin/ai
 	echo "building ai module"
 	mkdir -p obj
 	mkdir -p bin
-	$(CXX) $(LFLAGS) -pthread  modules/ai/ai.cpp -o bin/ai
+	$(CXX) $(LFLAGS_AI) -pthread  modules/ai/ai.cpp -o bin/ai
 
 .PHONY : clean
 clean:

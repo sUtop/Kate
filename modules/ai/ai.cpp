@@ -229,7 +229,6 @@ std::vector<ldouble> NeuralLayer::inputs(){
 
 void NeuralLayer::print(){
 #ifdef LOG
-    
     std::cout<<"NeuralLayer::print Layer of neurons with dem = "<<dem<<" nextdem ="<<nextdem<<" layer = "<<layer<<" is_last ="<<is_last<<"\n";
     std::cout<<" NeuralLayer::print sigmas:";
     for(int i=0;i<sigmas.size();i++)
@@ -240,6 +239,21 @@ void NeuralLayer::print(){
         Layer[i].print();
 #endif
 };
+
+void NeuralLayer::save(std::fstream logFile){
+//    f<<""
+//    logFile.open();//logFileName,std::ios_base::out | std::ios_base::ate);
+    logFile<<"NL d "<<dem<<" n "<<nextdem<<" l "<<layer<<" last "<<is_last<<"\n";
+//    logFile.close();
+    
+//    std::cout<<" NeuralLayer::print sigmas:";
+//    for(int i=0;i<sigmas.size();i++)
+//        std::cout<<sigmas[i]<<" ";
+//    std::cout<<"\n";
+//    std::cout<<" NeuralLayer::print data:\n";
+//    for(int i=0;i<Layer.size();i++)
+//        Layer[i].print();
+} 
 
 // NeuralNetwork
 

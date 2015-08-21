@@ -6,6 +6,8 @@
 
 float ambient[4] = {1.5, 1.5, 1.5, 1};
 
+long mails = 0;
+
 //GLfloat mat_diffuse[]={0.1,0.5,0.8,1.0};
 GLfloat mat_specular[]={1.0,1.0,1.0,1.0};
 //GLfloat low_shininess[]={5.0};
@@ -279,8 +281,10 @@ for(int m=0;m<10;m++)
     renderText(10,30,QString::fromStdString(str));
     sprintf(str,"mouseX = %f \t mouseY = %f  ",keyb.ptrMousePosition.x(),keyb.ptrMousePosition.y());
     renderText(10,40,QString::fromStdString(str));
-    sprintf(str," hight = %f ---- ",keyb.hight);
+    sprintf(str," hight = %f \t mails = %d ",keyb.hight,mails);
     renderText(10,50,QString::fromStdString(str));
+//    sprintf(str," m = %f ---- ",mails);
+//    renderText(10,50,QString::fromStdString(str));
 
 
 // ptrMousePosition
@@ -575,18 +579,20 @@ void Widget::wheelEvent(QWheelEvent *we)
 void Widget::keyPressEvent(QKeyEvent *ke)
 {
    keyb.keyPressEvent(ke);
-//   updateGL();
+   updateGL();
    };
 
 void Widget::keyReleaseEvent(QKeyEvent *ke)
 {
    keyb.keyReleaseEvent(ke);
-//   updateGL();
+   updateGL();
    }
 
+#include <ctime>
 
 void Widget::getmail(){
+//   keyb.xRot += 1;
+    mails = std::clock();
    updateGL();
-   keyb.xRot *= 1.001;
 };
 

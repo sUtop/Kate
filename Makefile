@@ -7,10 +7,11 @@ OBJS = obj/main.o obj/dispatcher.o # msg.o bd.o phz.o
 #OBJS_LINK = *.o *.lib
 
 CC=g++
+#CC=clang
 CXX = $(CC)
 DEBUG=-g
 INCLUDES += -I./
-LFLAGS += -Wall -std=c++11 -pipe -O2 -lpthread $(INCLUDES) $(DEBUG) # -D_REENTRANT 
+LFLAGS += -Wall -std=c++11 -pipe -lpthread $(INCLUDES) $(DEBUG) # -D_REENTRANT -O1 
 CFLAGS = -c $(LFLAGS)
 #  -lm -lz 
 LIBS +=
