@@ -25,23 +25,19 @@ DataBase::~DataBase(){
 };
 
 void DataBase::tic(){
+
     message* tic_msg = 0;
-    std::clock_t* _tic = 0;
-//    while(true){
-//        printLogFile("DataBase::tic size " + std::to_string(messagelist.size()) + " \n");
-//        printLogFile("DataBase::tic tic_bd " + std::to_string(reinterpret_cast<long>(messagelist["tic_bd"])) + " \n");
-//        printLogFile("DataBase::tic tic_bd size" + std::to_string(messagelist["tic_bd"]->size()) + " \n");
-        if(messagelist.size() && messagelist["tic_bd"] && !messagelist["tic_bd"]->empty()){
+    if(messagelist.size() && messagelist["tic_bd"] && !messagelist["tic_bd"]->empty()){
         tic_msg = messagelist["tic_bd"]->get();
         if(tic_msg != 0){
-            _tic = static_cast<std::clock_t*>(tic_msg->data);
+            // auto_ptr - автоматически освобождает память
+            std::auto_ptr<std::clock_t> tic_(static_cast<std::clock_t*>(tic_msg->data));
+            std::auto_ptr<message> mes(static_cast<message*>(tic_msg));
             
-            printLogFile("cur_tic : " + std::to_string(*_tic) + "\n");
-            delete _tic; // Освобождение области памяти *data
-            delete tic_msg; // Освобождение области памяти сообщения
+            printLogFile("cur_tic : " + std::to_string(*tic_.get()) + "\n");
         }
         else  std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
-        else  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    else  std::this_thread::sleep_for(std::chrono::milliseconds(10));
     
 };

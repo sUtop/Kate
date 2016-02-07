@@ -8,14 +8,17 @@
 #ifndef LIB_H
 #define	LIB_H
 
-#include <cstdint>
+//#include <cstdint>
 #include <map>
 #include <queue>
 #include <fstream>
 #include <thread>
 #include <ctime>    // Для выработки тиков - все модули их получают
 #include <mutex>
+#include <memory>
+#include <exception>
 
+#include <list>
 
 #define _LIBCPP_IOSTREAM // Запрет подключать <iostream>  в модулях
 
@@ -25,6 +28,7 @@ typedef void* dataType;
 
 struct message{
     // Тип списка сообщений - неблокирующие очереди
+    // Атомарные операции введены в стандарт С11!
     std::string from;
     std::string to;
     std::int8_t ID;
@@ -93,16 +97,28 @@ struct module{
     virtual ~module(){};
     
     void openLogFile(){
-        logFile.open(logFileName,std::ios_base::out | std::ios_base::ate);
-        logFile<<"";
-        logFile.close();
-    }
+        try{
+            logFile.open(logFileName,std::ios_base::out | std::ios_base::ate);
+            logFile<<"";
+            logFile.close();
+        }
+        catch(...)
+        {
+            ;
+        };
+    };
     //> Печать в лог-файл
     void printLogFile(std::string str=""){
-        logFile.open(logFileName,std::ios_base::app); //  | std::ios_base::ate | std::ios_base::trunc ,std::ios_base::out
-        if(logFile.is_open()) logFile<<str;
-//        logFile.flush();
-        logFile.close();
+        try{
+            logFile.open(logFileName,std::ios_base::app); //  | std::ios_base::ate | std::ios_base::trunc ,std::ios_base::out
+//            if(logFile.is_open()) 
+                logFile<<str;
+            logFile.close();
+        }
+        catch(...)
+        {
+            ;
+        }
     };
     //> Закрытие лог-файла
     

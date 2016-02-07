@@ -11,13 +11,13 @@
 // Модуль диспетчера не обязан знать где и какие модули лежат
 // однако как это сделать пока непонятно. Поэтому
 // временное решение - прямое включение модулей.
-#include "modules/msg/msg.h"
+#include "../modules/msg/msg.h"
 extern MessageDispeather *messager;
-#include "modules/bd/bd.h"
+#include "../modules/bd/bd.h"
 extern DataBase *database;
-#include "modules/inout/inout.h"
+#include "../modules/inout/inout.h"
 extern InputOutput *inputoutput;
-#include "modules/phz/phz.h"
+#include "../modules/phz/phz.h"
 extern Physics *physics;
 
 //char** mainargv;
@@ -27,13 +27,15 @@ typedef void (*PFunction) ();
 typedef std::list<std::thread*> thredList;
 typedef std::map<std::string,thredList> mapListsThreads;
 typedef std::list<std::string, std::allocator<std::string> > inputString;
+typedef std::map<std::string,PFunction> mapListPFunction;
+typedef std::map<std::string,module*> mapListPModule;
 
 class dispatcher{
     //	Thread* Th;
     mapListsThreads threads;     // Список потоков
-    std::map<std::string,PFunction> torun;          // Список функций к запуску в основном потоке(отображение? диспетчер)
+    mapListPFunction torun;          // Список функций к запуску в основном потоке(отображение? диспетчер)
     
-    std::map<std::string,module*> modules;          // Классы потоков
+    mapListPModule modules;          // Классы потоков
 //    messagelist* msglist;                           // Структура с сообщениями - в родительском классе
     //	Mem* M;
     //	char* reserv;
