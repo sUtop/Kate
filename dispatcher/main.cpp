@@ -5,7 +5,7 @@
 
 #include "dispatcher.h"
 
-inputString to_start;
+dispatcher::inputString to_start;
 
 //char** argv;
 //int argc;

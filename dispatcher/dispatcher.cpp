@@ -1,3 +1,14 @@
+/*! \brief Диспетчер запуска процессов.
+ *  \autor Utop 
+ *
+ Имя:
+    dispather.cpp
+ Описание:
+    
+ * 
+ **/
+
+
 #include "dispatcher.h"
 
 //dispatcher::dispatcher(int argc,char** argv){
@@ -70,31 +81,31 @@ int dispatcher::tic(){
 
 int dispatcher::addThread(dispatcher::returnMod mod){
 
-    std::thread* runmodule = 0;
-    if(mod.namemod == "msg") {
-            runmodule = new std::thread(msg::start);
-            modules[mod.namemod]=messager;
-        }//reinterpret_cast
-        else if(mod.namemod == "bd") {
-            runmodule = new std::thread(bd::start);
-            modules[mod.namemod]=database;
-        }
-        else if(mod.namemod == "inout") {
-            std::cout<<mod.namemod<<"inout to run \n";
-            torun[mod.namemod] = inout::start_main;
-            runmodule = new std::thread(inout::start);
-            modules[mod.namemod]=inputoutput;
-        }
-        else if(mod.namemod == "phz") {
-            runmodule = new std::thread(phz::start);
-            modules[mod.namemod]=physics;
-        }
+//    std::thread* runmodule = 0;
+//    if(mod.namemod == "msg") {
+//            runmodule = new std::thread(msg::start);
+//            modules[mod.namemod]=messager;
+//        }//reinterpret_cast
+//        else if(mod.namemod == "bd") {
+//            runmodule = new std::thread(bd::start);
+//            modules[mod.namemod]=database;
+//        }
+//        else if(mod.namemod == "inout") {
+//            std::cout<<mod.namemod<<"inout to run \n";
+//            torun[mod.namemod] = inout::start_main;
+//            runmodule = new std::thread(inout::start);
+//            modules[mod.namemod]=inputoutput;
+//        }
+//        else if(mod.namemod == "phz") {
+//            runmodule = new std::thread(phz::start);
+//            modules[mod.namemod]=physics;
+//        }
     
-    if(runmodule){
-        for(int i=0;i<mod.number;i++)threads[mod.namemod].push_back(runmodule); // Заполняем список потоков 
-//    std::cout<<"add :"<<mod.namemod<<": X"<<mod.number<<"  times. \n";
-        return 1;
-    };
+//    if(runmodule){
+//        for(int i=0;i<mod.number;i++)threads[mod.namemod].push_back(runmodule); // Заполняем список потоков 
+////    std::cout<<"add :"<<mod.namemod<<": X"<<mod.number<<"  times. \n";
+//        return 1;
+//    };
     return 0;
 };
 
