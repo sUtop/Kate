@@ -1,19 +1,21 @@
 project(bd)
 
 set( HEADERS
-    bd.h)
+    ai.h)
 
 set( SOURCES
-    bd.cpp)
+    ai.cpp)
 
-add_library(bd
+add_library(ai
     ${PUBLIC}
     ${SOURCES} 
     ${HEADERS})
 
-target_link_libraries(bd)
+target_link_libraries(ai)
 
-obj/bd.o:
-	echo "building bd module"
-	mkdir -p obj
-	$(CC) $(CFLAGS) modules/bd/bd.cpp -o obj/bd.o
+message("       Module ai added ")
+
+#obj/ai.o:
+#	echo "building bd module"
+#	mkdir -p obj
+#	$(CC) $(CFLAGS) modules/bd/bd.cpp -o obj/bd.o

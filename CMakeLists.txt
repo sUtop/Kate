@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.4.4)
 project(Kate)
 
 # Текущая версия
-set(VERSION "0.0.2")
+set(VERSION "0.0.3")
 
 # Путь до корневой директории
 set (ROOT_DIR ${PROJECT_SOURCE_DIR})
@@ -19,7 +19,7 @@ set (CMAKE_BINARY_DIR ${ROOT_DIR}/bin)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+#set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 
 # Установка стандарта с++14 и добавления отладочной информации
@@ -53,6 +53,6 @@ add_subdirectory(modules)
 add_executable(Kate ${SOURCES} ) 
 # ${PUBLIC} 
 
-add_dependencies(Kate modules)
+#add_dependencies(Kate modules)
 
 

@@ -60,6 +60,7 @@ int dispatcher::start(){
 };
 
 int dispatcher::stop(std::string proc){
+    // Посылать сигнал SIGTERM
 //    if(threads[proc]) {threads[proc]->~thread(); return 0;}  // TODO ! плохой - не освобождает память !?
     return 1;
 };

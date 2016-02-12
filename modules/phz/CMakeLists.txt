@@ -12,3 +12,6 @@ add_library(phz
     ${HEADERS})
 
 target_link_libraries(phz)
+
+
+message("       Module phz added ")

@@ -12,3 +12,5 @@ add_library(bd
     ${HEADERS})
 
 target_link_libraries(bd)
+
+message("       Module bd added ")

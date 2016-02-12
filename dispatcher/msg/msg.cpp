@@ -39,6 +39,7 @@ void MessageDispeather::tic(){
         for(msgertype::const_iterator i=messagelist.begin();i!=messagelist.end();i++){
                 std::clock_t* _tic = new std::clock_t(std::clock()); // Область памяти *data
                 message tic_msg("msg","ANY",0,sizeof(std::clock_t*),static_cast<dataType>(_tic));
+
                 if(i->first == "tic_inout"){
                     for(;i->second->put(tic_msg);){}; // || i->first == "tic_phz"
 //                    printLogFile("Send tic inout to \t " + std::to_string(long (i->second)) + "\n");
