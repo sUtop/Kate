@@ -1,10 +1,14 @@
 /TODO
 /nbproject/
 /other/
-/libinout.so.1.0.0
-/inout.gnu
+/bin/
+/CMakeFiles/
+**/CMakeFiles/
+Makefile
+CMakeCache.txt
+**/CMakeCache.txt
+**/*.cmake
 Kate
-run.sh
-.qmake.stash
-modules/.qmake.stash
+**.sh
+**.qmake.stash
 

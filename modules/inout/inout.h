@@ -12,7 +12,7 @@ namespace inout{
     void start();
 }
 
-class InputOutput: public module{
+class InputOutput: public Module{
     
 public:
     InputOutput();

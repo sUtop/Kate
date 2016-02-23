@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.4.4)
 project(Kate)
 
 # Текущая версия
-set(VERSION "0.0.3")
+set(VERSION "0.0.4")
 
 # Путь до корневой директории
 set (ROOT_DIR ${PROJECT_SOURCE_DIR})
@@ -24,10 +24,16 @@ set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Установка стандарта с++14 и добавления отладочной информации
 add_definitions(-std=c++14 -g)
+#set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -O0 -frtti") -rdynamic 
+# ldl - подключение dlfcn.h - библиотеки для динамического подключения библиотек
+# lpthread 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl -lpthread")
+#  -rdynamic -ldl
 
 # Установка заголовков основного модуля - диспетчера + мессаджера
 set( SOURCES
     ${ROOT_DIR}/dispatcher/dispatcher.cpp
+    ${ROOT_DIR}/dispatcher/lib.cpp
     ${ROOT_DIR}/dispatcher/msg/msg.cpp
     ${ROOT_DIR}/dispatcher/main.cpp
 )
@@ -43,7 +49,6 @@ set( PUBLIC
     ${ROOT_DIR}/dispatcher/msg/msg.h
 )
 
-
 # Копирование конфигурационного файла
 file(COPY "other/Kate.conf" DESTINATION "bin")
 
@@ -54,5 +59,4 @@ add_executable(Kate ${SOURCES} )
 # ${PUBLIC} 
 
 #add_dependencies(Kate modules)
-
 

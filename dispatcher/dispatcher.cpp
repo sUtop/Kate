@@ -4,123 +4,208 @@
  Имя:
     dispather.cpp
  Описание:
-    
+    !TODO Обязательно добавить сигналы и разультаты потоков.
  * 
  **/
 
 
 #include "dispatcher.h"
 
-//dispatcher::dispatcher(int argc,char** argv){
-//        
-//};
-
-dispatcher::dispatcher(inputString to_start){
+dispatcher::dispatcher(inputString to_start)
+{
+    std::map<std::string, returnMod> mapFunction;
+    std::vector<returnMes> vectMessages;
     std::list<std::string>::const_iterator i = to_start.begin();
-    std::string str_tmp; 
-//    std::thread* th_tmp;
-    returnMod mod_tmp;
-    returnMes mes_tmp;
-    for(;i!=to_start.end();i++)
-    {
+    std::string str_tmp;
+
+    returnMod modTmp;
+    returnMes mesTmp;
+
+    for(; i != to_start.end(); i++) {
         str_tmp = *i;
-        mod_tmp = parserModules(str_tmp);
-        if(mod_tmp.correct == 1) addThread(mod_tmp);
-        mes_tmp = parserMessages(str_tmp);
-        if(mes_tmp.correct == 1) addMess(mes_tmp);
+        // Попытка найти данные о модулях
+        modTmp = parserModules(str_tmp);
+        if(modTmp.correct == 1) mapFunction[modTmp.namemod] = returnMod(modTmp);
+        // Попытка найти данные о сообщениях
+        mesTmp = parserMessages(str_tmp);
+        if(mesTmp.correct == 1) vectMessages.push_back(mesTmp);
     }
+
+    // Проверка подключенных модулей
+    for(auto itM = vectMessages.begin(); itM != vectMessages.end(); ++itM) {
+        if(mapFunction[itM->frommod].correct == 1 &&
+           mapFunction[itM->tomod].correct == 1) {
+//            if() msgertype * msgt = new msgertype();
+            Messager * mess = new Messager(itM->nammes);
+            mess->from = itM->frommod;
+            mess->to = itM->tomod;
+//            msgt.
+
+
+        }
+    }
+
+    //          addThread(mod_tmp);
+    //          addMess(mesTmp)
+
+
+
 };
 
-int dispatcher::start(){
-
-    PFunction run_tmp;
-    
-    std::map<std::string,PFunction>::iterator k = torun.begin();
-    for(;k!=torun.end();k++){   // Запуск модулей в главном потоке
-        run_tmp = k->second;
-        (*run_tmp)();
-    };
+int dispatcher::start()
+{
 
     std::thread* th_tmp;
-    mapListsThreads::iterator listIterator = threads.begin();
-    for(;listIterator!=threads.end();listIterator++){ // Запуск потоков
+    mapListsThreads::iterator listIterator = m_threads.begin();
+    for(; listIterator != m_threads.end(); listIterator++) { // Запуск потоков
         thredList::iterator thredIterator = listIterator->second.begin();
-//        thredList::iterator thredIterator = 
-        for(;thredIterator!=listIterator->second.end();thredIterator++){
-            th_tmp = thredIterator.operator *();
+        //        thredList::iterator thredIterator = 
+        for(; thredIterator != listIterator->second.end(); thredIterator++) {
+            th_tmp = thredIterator.operator*( );
             th_tmp->join();
             if(th_tmp->joinable())// && j->first != "mod:modules/inout")
             {
-                th_tmp->detach();   // Отсоединение потока от главного
+                th_tmp->detach(); // Отсоединение потока от главного
             }
         }
     }
-    
+
+    //    std::map<std::string, PFunction>::iterator k = m_toRun.begin();
+    //    for(; k != m_toRun.end(); k++) { // Запуск модулей в главном потоке
+    //        run_tmp = k->second;
+    //        ( *run_tmp )( );
+    //    };
+
     return 0;
 };
 
-int dispatcher::stop(std::string proc){
+int dispatcher::stop(std::string proc)
+{
     // Посылать сигнал SIGTERM
-//    if(threads[proc]) {threads[proc]->~thread(); return 0;}  // TODO ! плохой - не освобождает память !?
+    //    if(threads[proc]) {threads[proc]->~thread(); return 0;}  // TODO ! плохой - не освобождает память !?
     return 1;
 };
 
-int dispatcher::stop(){
-//    std::map<std::string,std::thread*>::iterator j = threads.begin();
-//    for(;j!=threads.end();j++){
-//        stop(j->first);
-//    };
+int dispatcher::stop()
+{
+    //    std::map<std::string,std::thread*>::iterator j = threads.begin();
+    //    for(;j!=threads.end();j++){
+    //        stop(j->first);
+    //    };
     return 0;
-    
+
 };
 
-int dispatcher::tic(){
-//  if(error) return 1;
-    return 0;
-};
-
-
-int dispatcher::addThread(dispatcher::returnMod mod){
-
-//    std::thread* runmodule = 0;
-//    if(mod.namemod == "msg") {
-//            runmodule = new std::thread(msg::start);
-//            modules[mod.namemod]=messager;
-//        }//reinterpret_cast
-//        else if(mod.namemod == "bd") {
-//            runmodule = new std::thread(bd::start);
-//            modules[mod.namemod]=database;
-//        }
-//        else if(mod.namemod == "inout") {
-//            std::cout<<mod.namemod<<"inout to run \n";
-//            torun[mod.namemod] = inout::start_main;
-//            runmodule = new std::thread(inout::start);
-//            modules[mod.namemod]=inputoutput;
-//        }
-//        else if(mod.namemod == "phz") {
-//            runmodule = new std::thread(phz::start);
-//            modules[mod.namemod]=physics;
-//        }
-    
-//    if(runmodule){
-//        for(int i=0;i<mod.number;i++)threads[mod.namemod].push_back(runmodule); // Заполняем список потоков 
-////    std::cout<<"add :"<<mod.namemod<<": X"<<mod.number<<"  times. \n";
-//        return 1;
-//    };
+int dispatcher::tic()
+{
+    //  if(error) return 1;
     return 0;
 };
 
+int dispatcher::addThread(dispatcher::returnMod mod)
+{
+
+    std::thread* runmodule = 0;
+
+    std::string libname = "lib" + mod.namemod + ".a";
+    if(mod.namemod == "bd") {
+
+        void * handle = dlopen(libname.c_str(), RTLD_LAZY);
+        void * f = dlsym(handle, "start");
+
+        std::cout << " Loaded library " << mod.namemod << " with name " << libname << "\n";
+        //        typedef int (*sdl_init_function_type)(msgertype *);
+        start_function init_func = *( (start_function*) ( &f ) );
+        runmodule = new std::thread(init_func, m_argsToRun[mod.namemod]);
+
+        //int x = (*init_func)();
+        //dlclose(handle);
+        //printf("Return code: %dn",x);
+
+        //        runmodule = new std::thread(msg::start);
+        //        modules[mod.namemod] = ;
+    }
+
+    // ! Linux !
+
+    // Подключаемая библиотека 
+
+    //#include <iostream>
+    //using namespace std;
+    //
+    ////#include 
+    //
+    //extern "C" int hello()
+    //{
+    //cout<<"Hello world!n I'm function hello()"<<endl;
+    //return 0;
+    //}
+    // Динамическое подключение
+    //#include <stdio.h>
+    //#include <dlfcn.h>
+    //
+    //int main()
+    //{
+    //void *handle = dlopen("libdynamic.so",RTLD_LAZY);
+    //void * f = dlsym(handle,"hello");
+    //typedef int (*sdl_init_function_type)(void);
+    //sdl_init_function_type init_func = *((sdl_init_function_type*)(&f));
+    //int x = (*init_func)();
+    //dlclose(handle);
+    //printf("Return code: %dn",x);
+    //return 0;
+    //};
+
+    //    void *handle = dlopen("libbd.so", RTLD_LAZY);
+    //    void(*fun)(void);
+    //    fun = dlsym(handle, "start");
+    //    int x = (*fun)();
+    //    dlclose(handle);
+    //    printf("Return code: %dn", x);
+    //    return 0;
 
 
-dispatcher::returnMod dispatcher::parserModules(std::string inp){
-    
-    returnMod output = {"","",0,-1};
+
+
+
+    //    std::thread* runmodule = 0;
+    //    if(mod.namemod == "msg") {
+    //            runmodule = new std::thread(msg::start);
+    //            modules[mod.namemod]=messager;
+    //        }//reinterpret_cast
+    //        else if(mod.namemod == "bd") {
+    //            runmodule = new std::thread(bd::start);
+    //            modules[mod.namemod]=database;
+    //        }
+    //        else if(mod.namemod == "inout") {
+    //            std::cout<<mod.namemod<<"inout to run \n";
+    //            torun[mod.namemod] = inout::start_main;
+    //            runmodule = new std::thread(inout::start);
+    //            modules[mod.namemod]=inputoutput;
+    //        }
+    //        else if(mod.namemod == "phz") {
+    //            runmodule = new std::thread(phz::start);
+    //            modules[mod.namemod]=physics;
+    //        }
+
+    if(runmodule) {
+        for(int i = 0; i < mod.number; i++)m_threads[mod.namemod].push_back(runmodule); // Заполняем список потоков 
+        std::cout << "add :" << mod.namemod << ": X" << mod.number << "  times. \n";
+        return 1;
+    };
+    return 0;
+};
+
+dispatcher::returnMod dispatcher::parserModules(std::string inp)
+{
+
+    returnMod output;
     std::string minmask = "mod:\"m\":n";
     // Проверка на существование названия потока в строке
     if(inp.length() < minmask.length()) return output; // нет сообщения 
     int comment = inp.rfind('#'); // удаляем комментарии в конце
     std::string in = inp;
-    if(comment>=0) in.erase(comment,inp.size());
+    if(comment >= 0) in.erase(comment, inp.size());
 
     std::string modmask = "mod:";
     std::string dirmask = "/";
@@ -131,75 +216,80 @@ dispatcher::returnMod dispatcher::parserModules(std::string inp){
     // (путь - строка между "mod:" и кавычкой), поиск второй кавычки,
     // выделение названия модуля, поиск двоеточия, считывание количества процессов
 
-    int maskpos = in.find(modmask,0);
+    int maskpos = in.find(modmask, 0);
     int index = maskpos;
-    if(in[index]!=0 && index >= 0){
-        int firstcomma = in.find(quote,index);
+    if(in[index] != 0 && index >= 0) {
+        int firstcomma = in.find(quote, index);
         index = firstcomma + 1;
-        int secondcomma = in.find(quote,index);
+        int secondcomma = in.find(quote, index);
         index = secondcomma + 1;
-        if(in[index]==0) return output; // не нашли модуль
-        
+        if(in[index] == 0) return output; // не нашли модуль
+
         // <- TODO проверка на корректность пути
         std::string path = "";
-        for(int j=maskpos+modmask.size();j<firstcomma-1;++j)
+        for(int j = maskpos + modmask.size(); j < firstcomma - 1; ++j)
             path += in[j]; // Заполнили название пути
-        
-        
+
+
+        // Обрезка имени файла
         std::string module = "";
-        for(int j=firstcomma+1;j<secondcomma;++j)
+        for(int j = firstcomma + 1; j < secondcomma; ++j)
             module += in[j]; // Заполнили название модуля
-        
-        int collonindex=in.find(colon,index); // Нашли двоеточие
+
+        int collonindex = in.find(colon, index); // Нашли двоеточие
         index = collonindex + 1;
-        
+
+        // Читаем количество запусков процесса
         std::string strnumber = "";
-        while(std::isdigit(in[index])){
+        while(std::isdigit(in[index])) {
             strnumber += in[index];
             index++;
         }
-        
-        int number = std::stoi(strnumber);
-        
 
-        if( strnumber.length()<=0 || number < 0){ return output; }; // Не нашли количество процессов
-            
+        int number = std::stoi(strnumber);
+
+
+        if(strnumber.length() <= 0 || number < 0) {
+            return output;
+        }; // Не нашли количество процессов
+
         output.namemod = module;
         output.number = number;
         output.path = path;
         output.correct = 1;
 
-        std::cout<<"find :"<<module<<": x"<<number<<"  times. \n";
-        
+        std::cout << "find :" << module << ": x" << number << "  times. \n";
+
     }
 
     return output;
 }; //     std::thread* dispatcher::parserModules(std::string in)
 
+int dispatcher::addMess(dispatcher::returnMes mes)
+{
 
-int dispatcher::addMess(dispatcher::returnMes mes){
-    
-    std::cout<<"dispatcher::addMess => "<<mes.frommod + "->" + mes.tomod + ":" + mes.nammes<<"\" try \n";
-
-    if(modules[mes.frommod] && messager){
-     if(modules[mes.tomod]){
-        Messager* msg = new Messager(mes.nammes);
-        modules[mes.frommod]->messagelist[mes.nammes] = msg;
-        modules[mes.tomod]->messagelist[mes.nammes] = msg;
-        std::cout<<"dispatcher::addMess message \""<<mes.frommod + "->" + mes.tomod + ":" + mes.nammes<<"\" added \n";
-     }else if (mes.tomod == "all"){ // Групповая рассылка
-
-     }
-     }
-//         else if(mes.tomod == "inout"){
-//            messager->pf_tic[mes.nammes] = inout::update; //reinterpret_cast<PFunction>(*inputoutput->tic);
-////             messager->pf_tic[mes.nammes] = modules[mes.tomod].tic;//inputoutput->update;
-//                     //dynamic_cast<PFunction>((*inputoutput).update); //reinterpret_cast<PFunction>(*inputoutput->tic);
-//         } // http://rsdn.ru/article/cpp/fastdelegate.xml
-     else{
-
-        std::cout<<"dispatcher::addMess !!! message \""<<mes.frommod + "->" + mes.tomod + ":" + mes.nammes<<"\" can\'t create \n";                 
-     };
+    //    std::cout << "dispatcher::addMess => " << mes.frommod + "->" + mes.tomod + ":" + mes.nammes << "\" try \n";
+    //
+    //    if(modules[mes.frommod] && messager) {
+    //        if(modules[mes.tomod]) {
+    //            Messager* msg = new Messager(mes.nammes);
+    //            // Ужастно! указатель на map - последнее дело.
+    //            ( *modules[mes.frommod]->mp_messagelist )[mes.nammes] = msg;
+    //            ( *modules[mes.tomod]->mp_messagelist )[mes.nammes] = msg;
+    //            std::cout << "dispatcher::addMess message \"" << mes.frommod + "->" + mes.tomod + ":" + mes.nammes << "\" added \n";
+    //        }
+    //        else if(mes.tomod == "all") { // Групповая рассылка
+    //
+    //        }
+    //    } //         else if(mes.tomod == "inout"){
+    //        //            messager->pf_tic[mes.nammes] = inout::update; //reinterpret_cast<PFunction>(*inputoutput->tic);
+    //        ////             messager->pf_tic[mes.nammes] = modules[mes.tomod].tic;//inputoutput->update;
+    //        //                     //dynamic_cast<PFunction>((*inputoutput).update); //reinterpret_cast<PFunction>(*inputoutput->tic);
+    //        //         } // http://rsdn.ru/article/cpp/fastdelegate.xml
+    //    else {
+    //
+    //        std::cout << "dispatcher::addMess !!! message \"" << mes.frommod + "->" + mes.tomod + ":" + mes.nammes << "\" can\'t create \n";
+    //    };
     // Потом будет вызываться:
     //   module.messagelist["mesname"].put(message) в коде будет выглядить  messagelist["mesname"].put(message)
     // и module.messagelist["mesname"].get(message)                         messagelist["mesname"].get(message)
@@ -210,65 +300,66 @@ int dispatcher::addMess(dispatcher::returnMes mes){
     return 0;
 }; // dispatcher::addMess(dispatcher::returnMes mes)
 
-dispatcher::returnMes dispatcher::parserMessages(std::string inp){
-    returnMes output = {"","","",-1};
-    
+dispatcher::returnMes dispatcher::parserMessages(std::string inp)
+{
+    returnMes output;
+
     std::string minmask = "msg:\"f\"->\"t\":\"t\"";
-    
+
     if(inp.length() < minmask.size()) return output; // нет сообщения 
-    
+
     int comment = inp.rfind('#'); // удаляем комментарии в конце
     std::string in = inp;
-    if(comment>0) in.erase(comment,inp.size());
+    if(comment > 0) in.erase(comment, inp.size());
     int index = 0;
 
     std::string messmask = "msg:";
     std::string tomask = "->";
     std::string quote = "\"";
     std::string colon = ":";
-    index = in.find(messmask,0);
-    if(in[index]!=0 && index >= 0){
+    index = in.find(messmask, 0);
+    if(in[index] != 0 && index >= 0) {
         // msg:"from"->"to":"type"
         // Находим маску, обрезаем ее, ищем первую кавычку,ищем вторую кавычку,
         // вырезаем имя первого модуля, ищем "->" ищем второй модуль, вырезаем имя
         // второго модуля, ищем двоеточие, ищем название
-        int firstcomma = in.find(quote,index);
-        index = firstcomma+1;
-        int secondcomma = in.find(quote,index);
-        index = secondcomma+1;
-        if(in[index]==0) return output; // не нашли первый модуль
+        int firstcomma = in.find(quote, index);
+        index = firstcomma + 1;
+        int secondcomma = in.find(quote, index);
+        index = secondcomma + 1;
+        if(in[index] == 0) return output; // не нашли первый модуль
 
         std::string frommodule = "";
-        for(int j=firstcomma+1;j<secondcomma;++j)
+        for(int j = firstcomma + 1; j < secondcomma; ++j)
             if(!std::isspace(in[j]))frommodule += in[j];
-                                                        // Заполнили название 1-го модуля
-        int arrow = in.find(tomask,index);
-        index = arrow+1;
-        firstcomma = in.find(quote,index);
-        index = firstcomma+1;
+        // Заполнили название 1-го модуля
+        int arrow = in.find(tomask, index);
+        index = arrow + 1;
+        firstcomma = in.find(quote, index);
+        index = firstcomma + 1;
 
-        secondcomma = in.find(quote,index);
-        index = secondcomma+1;
-        if(in[index]==0) return output; // не нашли второй модуль
+        secondcomma = in.find(quote, index);
+        index = secondcomma + 1;
+        if(in[index] == 0) return output; // не нашли второй модуль
 
         std::string tomodule = "";
-        for(int j=firstcomma+1;j<secondcomma;++j)
+        for(int j = firstcomma + 1; j < secondcomma; ++j)
             if(!std::isspace(in[j]))tomodule += in[j];
-                                                        // Заполнили название 2-го модуля
+        // Заполнили название 2-го модуля
 
-        int collonindex=in.find(colon,index);                     // Нашли двоеточие
-        firstcomma = in.find(quote,collonindex+1);
-        index = firstcomma+1;
+        int collonindex = in.find(colon, index); // Нашли двоеточие
+        firstcomma = in.find(quote, collonindex + 1);
+        index = firstcomma + 1;
 
-        secondcomma = in.find(quote,index);
-        if(secondcomma==-1 || in[secondcomma]==0) return output; // не нашли название сообщения
-        index = secondcomma+1;
+        secondcomma = in.find(quote, index);
+        if(secondcomma == -1 || in[secondcomma] == 0) return output; // не нашли название сообщения
+        index = secondcomma + 1;
 
         std::string namemess = "";
-        for(int j=firstcomma+1;j<secondcomma;++j)
+        for(int j = firstcomma + 1; j < secondcomma; ++j)
             if(!std::isspace(in[j]))namemess += in[j];
 
-        std::cout<<"Find message from module :"<<frommodule<<": to module :"<<tomodule<<": with name :"<<namemess<<":\n";
+        std::cout << "Find message from module :" << frommodule << ": to module :" << tomodule << ": with name :" << namemess << ":\n";
 
         output.frommod = frommodule;
         output.tomod = tomodule;

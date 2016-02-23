@@ -41,15 +41,15 @@ InputOutput::~InputOutput(){
 };
 
 void InputOutput::tic(){
-    message* tic_msg = 0;
+    Message* tic_msg = 0;
 //    std::clock_t* _tic = 0;
 
-    if(messagelist.size() && messagelist["tic_inout"] && !messagelist["tic_inout"]->empty()){
-        tic_msg = messagelist["tic_inout"]->get();
+    if(mp_messagelist.size() && mp_messagelist["tic_inout"] && !mp_messagelist["tic_inout"]->empty()){
+        tic_msg = mp_messagelist["tic_inout"]->get();
         if(tic_msg != 0){
             // auto_ptr - автоматически освобождает память
             std::auto_ptr<std::clock_t> tic_(static_cast<std::clock_t*>(tic_msg->data));
-            std::auto_ptr<message> mes(static_cast<message*>(tic_msg));
+            std::auto_ptr<Message> mes(static_cast<Message*>(tic_msg));
 
             sendarman.sendtic(); // Связь по тику
         }

@@ -1,7 +1,23 @@
-/* 
- * File:   lib.h
- * Author: utop
+/*! \brief Общее для всех модулей АПИ.
+ *  \autor Utop 
  *
+ Имя:
+    lib.h
+ Описание:
+ *  Структура сообщений список сообщений и базовый класс для модулей.
+ * 
+ *  Модуль - динамически подключаемая библиотека.
+ *      при чтении конфигурации подключается библиотека и 
+ *      вызывается метод start(*messagelist) - столько раз, сколько потоков
+ *      требуется в конфигурационном файле.
+ *  Очередь сообщений messagelist - создается до запуска потока и передается
+ *      в качестве параметра для подключения ее к потоку.
+ * 
+ *  Описание структуры сообщения и находятся в этом заголовке:
+ *      1. Для того, чтобы все модули могли ими пользоваться
+ *      2. Так как сам Мессаджер тоже является модулем и запускается наравне 
+ *          с остальными.
+ *  
  * Created on 9 июля 2015 г., 16:31
  */
 
@@ -26,108 +42,84 @@
 
 typedef void* dataType;
 
-struct message{
+
+//!< Одно сообщение с информацией.
+
+struct Message {
     // Тип списка сообщений - неблокирующие очереди
     // Атомарные операции введены в стандарт С11!
-    std::string from;
-    std::string to;
-    std::int8_t ID;
-    std::int32_t size;
-    dataType data;
-    message(const message &msg){
-        from = msg.from;
-        to   = msg.to;
-        ID   = msg.ID;
-        size = msg.size;
-        data = msg.data;
-        
-    }
-    message(std::string from_, std::string to_, std::int8_t ID_, std::int32_t size_,void* data_):
-            from(from_),to(to_),ID(ID_),size(size_),data(data_){};
+    std::string m_from; // Источник
+    std::string m_to; // Получатель
+    std::int8_t m_ID; // Некоторый идентификатор
+    std::int32_t m_size; // Размер
+    dataType m_data;
+    Message(const Message &msg);
+
+    Message(std::string from_, std::string to_,
+            std::int8_t ID_, std::int32_t size_, void* data_);
 };
 
-struct Messager{
-// Список сообщений между двумя потоками
-private:
-    std::mutex          lock; // локатор 
-    std::queue<message> list; // очередь
+//!< Одна очередь сообщений между двумя потоками
+class Messager {
+    std::mutex lock; // локатор 
+    std::queue<Message> list; // очередь
 
 public:
-    Messager(std::string namemes_):namemes(namemes_){};
-    
-    message* get(){ 
-        message* output = 0;
-        if(lock.try_lock()){
-            if(!empty()){
-            output = new message(list.front()); // Конструктор копирования
-            list.pop();}
-            lock.unlock();
-        }else return 0;
-        return output;
-    };
-    
-    std::int8_t  put(const message &msg){
-        if(lock.try_lock()){
-        list.push(msg);
-        lock.unlock();
-        }else
-            return 1;
-        return 0;
-    };
-    std::int8_t  empty()// Проверка на наличие сообщений
-    {return list.empty();};       // 1 если пуст, 0 если не пуст
-    
-    std::int32_t size(){return list.size();};
-    
+    Messager(std::string namemes_);
+    Message* get();
+
+    std::int8_t put(const Message &msg);
+    std::int8_t empty();
+    std::int32_t size();
+
     std::string namemes;
     std::string from;
     std::string to;
-    
+
 };
 
 
-typedef std::map<std::string,Messager*> msgertype;
+typedef std::map<std::string, Messager*> msgertype;
+//!< Все очереди сообщений ко всем модулям
 
-struct module{
-// Заготовка/шаблон для создания классов модулей
-// Назначение: передаваться в диспетчер для вызова деструктора
-    msgertype messagelist; // Список сообщений для этого модуля
-    
-    module(){name = "NULL";logFileName = ".test_log_file";};
-    virtual ~module(){};
-    
-    void openLogFile(){
-        try{
-            logFile.open(logFileName,std::ios_base::out | std::ios_base::ate);
-            logFile<<"";
-            logFile.close();
-        }
-        catch(...)
-        {
-            ;
-        };
-    };
-    //> Печать в лог-файл
-    void printLogFile(std::string str=""){
-        try{
-            logFile.open(logFileName,std::ios_base::app); //  | std::ios_base::ate | std::ios_base::trunc ,std::ios_base::out
-//            if(logFile.is_open()) 
-                logFile<<str;
-            logFile.close();
-        }
-        catch(...)
-        {
-            ;
-        }
-    };
-    //> Закрытие лог-файла
-    
-    virtual void tic() = 0;  // абстрактный класс
-    
-    std::fstream    logFile;
-    std::string     logFileName;
-    std::string     name; //< Имя модуля.
-   
+typedef int (*start_function)(msgertype *);
+//!< Указатель на функцию для запуска (start_function) передается 
+
+//typedef std::map<std::string, start_function> pftype;
+////!< Список указателей на функции для запуска.
+
+typedef std::map<std::string, start_function> mapThreadFunctions;
+//!< Список функций на запуск
+
+
+/* \brief Базовый для всех модулей родитель.
+ *  Хранит имя модуля и открытый файл логов.
+ *      Назначение: передаваться в диспетчер для вызова деструктора.
+ */
+class Module {
+    std::fstream m_logFile; //!< Открытый файл для логирования.
+    std::string m_logFileName; //!< Имя файла логирования
+    std::string m_name; //!< Имя модуля.
+
+
+    void openLogFile(); //!< Закрытие лог-файла
+    explicit Module(); //!< Умолчательный конструктор запрещен
+    Module(Module&); //!< Конструктор копирования запрещен
+    Module &operator=(const Module&); //!< Оператор присваивания запрещен
+public:
+    //! Конструктор, принимает уготованную ему очередь сообщений и 
+    // собственное имя для возможности записи лог-файла.
+    explicit Module(msgertype *, std::string);
+    virtual ~Module();
+    virtual void tic() = 0; // абстрактный классk                                   
+
+
+
+    void printLogFile(std::string str); //!< Печать в лог-файл
+
+    const std::string &name();
+    msgertype * mp_messagelist; //!< Список сообщений для этого модуля
+
 };
 
 #endif	/* LIB_H */

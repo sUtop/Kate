@@ -20,60 +20,65 @@
 #include <string>
 #include "lib.h"
 
-// 
-
+#include <dlfcn.h> // ! dlopen и подобные
 
 #include "msg.h"
 extern MessageDispeather *messager;
 
-//#include "../modules/bd/bd.h"
-//extern DataBase *database;
-//#include "../modules/inout/inout.h"
-//extern InputOutput *inputoutput;
-//#include "../modules/phz/phz.h"
-//extern Physics *physics;
-
-
-
-//char** mainargv;
-//int mainargc;
-
+/* \brief Диспетчер потоков.
+ *   Динамически вызывает модули, читает конфигурацию, создает потоки сообщений
+ *      и сцепляет модули посредством их.
+ */
 class dispatcher {
-    //	Thread* Th;
-    //    messagelist* msglist;                           // Структура с сообщениями - в родительском классе
-    //	Mem* M;
-    //	char* reserv;
 
-    struct returnMod {  
-        std::string path;
-        std::string namemod;
-        int number;
-        int correct;
+        /* \brief Структура для чтения модуля из конфигурации.
+     */
+    struct returnMod {
+        std::string path; //!< путь до библиотеки
+        std::string namemod; //!< имя модуля
+        int number; //!< количество запусков модуля
+        //       (0) - для запуска в главном потоке
+        //       (N) - для запуска N потоков паралельно
+        int correct; //!< признак корректности считывания модуля, выставляется последним
+
+        returnMod() : path(""), namemod(""), number(0), correct(-1) {
+        }
     };
 
+        /* \brief Структура для чтения сообщения из конфигурации.
+     */
     struct returnMes {
-        std::string frommod;
-        std::string tomod;
-        std::string nammes;
-        int correct;
+        std::string frommod; //!< Источник сообщения
+        std::string tomod; //!< Получатель сообщения
+        std::string nammes; //!< Имя сообщения
+        int correct; //!< признак корректности считывания модуля, выставляется последним
+
+        returnMes() : frommod(""), tomod(""), nammes(0), correct(-1) {
+        }
     };
+
+    typedef std::list<std::thread*> thredList;
+    //!< Список запущенных потоков
+
+    typedef std::map<std::string, thredList> mapListsThreads;
+    //!< Список списков потоков (список списков, двоение - для множественного запуска)
+
+    typedef std::map<std::string, msgertype *> mapArgFunctions;
+    //!< Список аргументов для функций на запуск (сообщения)
+    // Так же отвечает за хранение всех сообщений.
+
 
 public:
 
-    typedef void (*PFunction) ();   //!< Указатель на функцию для запуска
-    typedef std::list<std::thread*> thredList;  //!< Список запущенных потоков
-    typedef std::map<std::string, thredList> mapListsThreads;   //!< 
     typedef std::list<std::string, std::allocator<std::string> > inputString;
-    typedef std::map<std::string, PFunction> mapListPFunction;
-    typedef std::map<std::string, module*> mapListPModule;
+    //!< Строки с конфигурацией
 
     dispatcher(int, char**);
-    //< Конструктор принимает параметры программы
+    //!< Конструктор принимает параметры программы
     dispatcher(inputString);
-    //< Конструктор принимает список запускаемых модулей
-
+    //!< Конструктор принимает список запускаемых модулей
     int start();
-    //< Запуск всех процессов происходит отдельно - умышленно.
+    //!< Запуск всех процессов происходит отдельно - умышленно.
     int addThread(returnMod);
 
     int addThread(std::thread*, std::string = "");
@@ -97,14 +102,18 @@ private:
     returnMes parserMessages(std::string);
     //< Поиск нужного процесса. Возвращает указатель на процесс в случае успеха и 0 иначе.
 
-    
-    
-    mapListsThreads threads; // Список потоков
-    mapListPFunction torun; // Список функций к запуску в основном потоке(отображение? диспетчер)
 
-    mapListPModule modules; // Классы потоков
 
-    
+    mapListsThreads m_threads; // Список потоков
+    mapThreadFunctions m_toRun;
+    // Список функций к запуску в основном потоке(отображение? диспетчер)
+    mapArgFunctions m_argsToRun; // ( )
+    // Так же хранит все данные о сообщениях - во время запуска.
+
+
+    //    mapListPModule modules; // Классы потоков
+
+
 };
 
 #endif

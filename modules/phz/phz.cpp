@@ -1,6 +1,6 @@
 #include "phz.h"
 
-Physics* physics = new Physics();
+//Physics* physics = new Physics();
 
 void phz::start(){
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -13,14 +13,11 @@ void phz::start(){
 //    }
 }
 
-Physics::Physics(){
-    name = "phz";
-    logFileName = ".Physics_log";
-    openLogFile();
+Physics::Physics(msgertype * msg, std::string name)
+: Module(msg, name){
 };
 
 Physics::~Physics(){
-    name = "NULL";
 };
 
 void Physics::tic(){

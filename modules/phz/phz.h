@@ -9,12 +9,14 @@ namespace phz{
     void start();
 }
 
-class Physics: public module{
+class Physics: public Module{
     
     
     
 public:
-    Physics();
+    //! Конструктор, принимает уготованную ему очередь сообщений и 
+    // собственное имя для возможности записи лог-файла.
+    explicit Physics(msgertype *, std::string) ;
     ~Physics();
     
     void tic();
