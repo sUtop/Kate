@@ -37,8 +37,9 @@ if (${U_SYSTEM} MATCHES "DARWIN")
         # ldl - подключение dlfcn.h - библиотеки для динамического подключения библиотек
         # lpthread - подключение библиотеки потоков
         # fPIC - динамическое связывание
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl -lpthread -fPIC")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl -lpthread -fPIC -Wall")
 
+        include_directories("dispatcher/platform/darwin")
         message("!!! Hi! Your system is Mac! ")
 elseif (${U_SYSTEM} MATCHES "LINUX")
 
@@ -48,8 +49,9 @@ elseif (${U_SYSTEM} MATCHES "LINUX")
         # ldl - подключение dlfcn.h - библиотеки для динамического подключения библиотек
         # lpthread - подключение библиотеки потоков
         # fPIC - динамическое связывание
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl -lpthread -fPIC")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl -lpthread -pthread -fPIC")
 
+        include_directories("dispatcher/platform/gnu")
         message("!!! Hi, GNU user! ")
 
 elseif (${U_SYSTEM} MATCHES "SUNOS")

@@ -1,6 +1,10 @@
 #include "ai.h"
 
 
+int start(msgertype * msg) {
+    return 0;
+};
+
 // Включение логирования - вывод всех данных на консоль
 //#define LOG
 

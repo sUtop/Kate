@@ -83,7 +83,7 @@ public:
 typedef std::map<std::string, Messager*> msgertype;
 //!< Все очереди сообщений ко всем модулям
 
-typedef int (*start_function)(msgertype *);
+typedef void (*start_function)(msgertype *);
 //!< Указатель на функцию для запуска (start_function) передается 
 
 //typedef std::map<std::string, start_function> pftype;

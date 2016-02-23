@@ -23,8 +23,6 @@
 #include <string>
 #include "lib.h"
 
-#include <dlfcn.h> // ! dlopen и подобные
-
 #include "msg.h"
 extern MessageDispeather *messager;
 
@@ -105,7 +103,7 @@ private:
     //!< Поиск в строке информации о добавляемом сообщении
 
     
-    typedef std::map<std::string, thredList> mapListsThreads;
+    typedef std::map<std::string, thredList *> mapListsThreads;
     //!< Список списков потоков ("список списков", двоение - для множественного запуска)
 
     typedef std::map<std::string, msgertype *> mapArgFunctions;

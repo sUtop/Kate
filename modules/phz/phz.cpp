@@ -1,25 +1,41 @@
 #include "phz.h"
 
-//Physics* physics = new Physics();
+int start(msgertype * msg)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+    phz::Physics* phzi = new phz::Physics(msg, "phz");
 
-void phz::start(){
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    
-//    for (int i = 0; i < 40; ++i)
-//    {
-//        std::string str = "::PHZ  ";
-//        physics->printLogFile(str + std::to_string(i) + "\n");
-//        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-//    }
+    if(phzi == 0) return -1;
+
+    //    while(true){
+    phzi->tic();
+    //    }
+    return 0;
+
+
+
+    //    phz::Physics* physics = new phz::Physics(msg,"phz");
+    //    physics->printLogFile("Hello !");
+    //    for (int i = 0; i < 40; ++i)
+    //    {
+    //        std::string str = "::PHZ  ";
+    //        physics->printLogFile(str + std::to_string(i) + "\n");
+    //        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    //    }
 }
 
-Physics::Physics(msgertype * msg, std::string name)
-: Module(msg, name){
+phz::Physics::Physics(msgertype * msg, std::string name)
+: Module(msg, name)
+{
 };
 
-Physics::~Physics(){
+phz::Physics::~Physics()
+{
 };
 
-void Physics::tic(){
+void phz::Physics::tic()
+{
+
+    printLogFile("Hello ?\n");
 
 };
