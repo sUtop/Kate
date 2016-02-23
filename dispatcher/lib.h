@@ -66,6 +66,7 @@ class Messager {
 
 public:
     Messager(std::string namemes_);
+    Messager(const Messager&);
     Message* get();
 
     std::int8_t put(const Message &msg);

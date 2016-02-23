@@ -1,12 +1,14 @@
 project(bd)
 
 set( HEADERS
+    ${ROOT_DIR}/dispatcher/lib.h
     ai.h)
 
 set( SOURCES
+    ${ROOT_DIR}/dispatcher/lib.cpp
     ai.cpp)
 
-add_library(ai
+add_library(ai SHARED
     ${PUBLIC}
     ${SOURCES} 
     ${HEADERS})

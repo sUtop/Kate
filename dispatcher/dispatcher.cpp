@@ -39,30 +39,52 @@ dispatcher::dispatcher(inputString to_start)
             Messager * mess = new Messager(itM->nammes);
             mess->from = itM->frommod;
             mess->to = itM->tomod;
-//            msgt.
+            // Принцып двойного связывания - по имени сообщения
+            // от кого сообщение можно понять из Messager
+            // std::map<std::string, Messager*> msgertype;
+            // std::map<std::string, msgertype *> mapArgFunctions
+            if(!m_argsToRun[mess->from]) {
+                msgertype * msgt = new msgertype;
+                m_argsToRun[mess->from] = msgt;
+            }
+            if(!m_argsToRun[mess->to]) {
+                msgertype * msgt = new msgertype;
+                m_argsToRun[mess->to] = msgt;
+            }
+            
+            m_argsToRun[mess->from]->operator [](itM->nammes) = mess;
+            m_argsToRun[mess->to]->operator [](itM->nammes) = mess;
 
 
         }
     }
 
-    //          addThread(mod_tmp);
-    //          addMess(mesTmp)
-
-
+    // Заполнение списка потоков
+    for(auto itT = mapFunction.begin(); itT != mapFunction.end(); ++itT) {
+        addThread(itT->second);
+    }
+    
 
 };
 
 int dispatcher::start()
 {
 
+    std::cout << " Dispatcher start \n" ;
+
     std::thread* th_tmp;
-    mapListsThreads::iterator listIterator = m_threads.begin();
-    for(; listIterator != m_threads.end(); listIterator++) { // Запуск потоков
+    for(mapListsThreads::iterator listIterator = m_threads.begin() 
+            ; listIterator != m_threads.end(); listIterator++) { // Запуск потоков
         thredList::iterator thredIterator = listIterator->second.begin();
-        //        thredList::iterator thredIterator = 
+
+        std::cout  << " Thread " << listIterator->first << " found ! \n";
+
         for(; thredIterator != listIterator->second.end(); thredIterator++) {
             th_tmp = thredIterator.operator*( );
             th_tmp->join();
+
+            std::cout  << " Thread " << listIterator->first << " join ! \n";
+
             if(th_tmp->joinable())// && j->first != "mod:modules/inout")
             {
                 th_tmp->detach(); // Отсоединение потока от главного
@@ -70,39 +92,16 @@ int dispatcher::start()
         }
     }
 
-    //    std::map<std::string, PFunction>::iterator k = m_toRun.begin();
-    //    for(; k != m_toRun.end(); k++) { // Запуск модулей в главном потоке
-    //        run_tmp = k->second;
-    //        ( *run_tmp )( );
-    //    };
+        
+        for(auto tR = m_toRun.begin(); tR != m_toRun.end(); tR++) { // Запуск модулей в главном потоке
+            auto run_tmp = tR->second;
+//            ( *run_tmp )([tR->first] );
+        };
 
     return 0;
 };
 
-int dispatcher::stop(std::string proc)
-{
-    // Посылать сигнал SIGTERM
-    //    if(threads[proc]) {threads[proc]->~thread(); return 0;}  // TODO ! плохой - не освобождает память !?
-    return 1;
-};
-
-int dispatcher::stop()
-{
-    //    std::map<std::string,std::thread*>::iterator j = threads.begin();
-    //    for(;j!=threads.end();j++){
-    //        stop(j->first);
-    //    };
-    return 0;
-
-};
-
-int dispatcher::tic()
-{
-    //  if(error) return 1;
-    return 0;
-};
-
-int dispatcher::addThread(dispatcher::returnMod mod)
+int dispatcher::addThread(dispatcher::returnMod &mod)
 {
 
     std::thread* runmodule = 0;
@@ -110,6 +109,7 @@ int dispatcher::addThread(dispatcher::returnMod mod)
     std::string libname = "lib" + mod.namemod + ".a";
     if(mod.namemod == "bd") {
 
+        libname = "libbd.dylib";
         void * handle = dlopen(libname.c_str(), RTLD_LAZY);
         void * f = dlsym(handle, "start");
 
@@ -118,6 +118,8 @@ int dispatcher::addThread(dispatcher::returnMod mod)
         start_function init_func = *( (start_function*) ( &f ) );
         runmodule = new std::thread(init_func, m_argsToRun[mod.namemod]);
 
+//        (*init_func)(m_argsToRun[mod.namemod]);
+        
         //int x = (*init_func)();
         //dlclose(handle);
         //printf("Return code: %dn",x);
@@ -125,68 +127,6 @@ int dispatcher::addThread(dispatcher::returnMod mod)
         //        runmodule = new std::thread(msg::start);
         //        modules[mod.namemod] = ;
     }
-
-    // ! Linux !
-
-    // Подключаемая библиотека 
-
-    //#include <iostream>
-    //using namespace std;
-    //
-    ////#include 
-    //
-    //extern "C" int hello()
-    //{
-    //cout<<"Hello world!n I'm function hello()"<<endl;
-    //return 0;
-    //}
-    // Динамическое подключение
-    //#include <stdio.h>
-    //#include <dlfcn.h>
-    //
-    //int main()
-    //{
-    //void *handle = dlopen("libdynamic.so",RTLD_LAZY);
-    //void * f = dlsym(handle,"hello");
-    //typedef int (*sdl_init_function_type)(void);
-    //sdl_init_function_type init_func = *((sdl_init_function_type*)(&f));
-    //int x = (*init_func)();
-    //dlclose(handle);
-    //printf("Return code: %dn",x);
-    //return 0;
-    //};
-
-    //    void *handle = dlopen("libbd.so", RTLD_LAZY);
-    //    void(*fun)(void);
-    //    fun = dlsym(handle, "start");
-    //    int x = (*fun)();
-    //    dlclose(handle);
-    //    printf("Return code: %dn", x);
-    //    return 0;
-
-
-
-
-
-    //    std::thread* runmodule = 0;
-    //    if(mod.namemod == "msg") {
-    //            runmodule = new std::thread(msg::start);
-    //            modules[mod.namemod]=messager;
-    //        }//reinterpret_cast
-    //        else if(mod.namemod == "bd") {
-    //            runmodule = new std::thread(bd::start);
-    //            modules[mod.namemod]=database;
-    //        }
-    //        else if(mod.namemod == "inout") {
-    //            std::cout<<mod.namemod<<"inout to run \n";
-    //            torun[mod.namemod] = inout::start_main;
-    //            runmodule = new std::thread(inout::start);
-    //            modules[mod.namemod]=inputoutput;
-    //        }
-    //        else if(mod.namemod == "phz") {
-    //            runmodule = new std::thread(phz::start);
-    //            modules[mod.namemod]=physics;
-    //        }
 
     if(runmodule) {
         for(int i = 0; i < mod.number; i++)m_threads[mod.namemod].push_back(runmodule); // Заполняем список потоков 
@@ -265,40 +205,40 @@ dispatcher::returnMod dispatcher::parserModules(std::string inp)
     return output;
 }; //     std::thread* dispatcher::parserModules(std::string in)
 
-int dispatcher::addMess(dispatcher::returnMes mes)
-{
-
-    //    std::cout << "dispatcher::addMess => " << mes.frommod + "->" + mes.tomod + ":" + mes.nammes << "\" try \n";
-    //
-    //    if(modules[mes.frommod] && messager) {
-    //        if(modules[mes.tomod]) {
-    //            Messager* msg = new Messager(mes.nammes);
-    //            // Ужастно! указатель на map - последнее дело.
-    //            ( *modules[mes.frommod]->mp_messagelist )[mes.nammes] = msg;
-    //            ( *modules[mes.tomod]->mp_messagelist )[mes.nammes] = msg;
-    //            std::cout << "dispatcher::addMess message \"" << mes.frommod + "->" + mes.tomod + ":" + mes.nammes << "\" added \n";
-    //        }
-    //        else if(mes.tomod == "all") { // Групповая рассылка
-    //
-    //        }
-    //    } //         else if(mes.tomod == "inout"){
-    //        //            messager->pf_tic[mes.nammes] = inout::update; //reinterpret_cast<PFunction>(*inputoutput->tic);
-    //        ////             messager->pf_tic[mes.nammes] = modules[mes.tomod].tic;//inputoutput->update;
-    //        //                     //dynamic_cast<PFunction>((*inputoutput).update); //reinterpret_cast<PFunction>(*inputoutput->tic);
-    //        //         } // http://rsdn.ru/article/cpp/fastdelegate.xml
-    //    else {
-    //
-    //        std::cout << "dispatcher::addMess !!! message \"" << mes.frommod + "->" + mes.tomod + ":" + mes.nammes << "\" can\'t create \n";
-    //    };
-    // Потом будет вызываться:
-    //   module.messagelist["mesname"].put(message) в коде будет выглядить  messagelist["mesname"].put(message)
-    // и module.messagelist["mesname"].get(message)                         messagelist["mesname"].get(message)
-    // + module.messagelist["mesname"].isempty()                            messagelist["mesname"].isempty()
-    // + module.messagelist["mesname"].clear                                messagelist["mesname"].clear()
-    // 
-
-    return 0;
-}; // dispatcher::addMess(dispatcher::returnMes mes)
+//int dispatcher::addMess(dispatcher::returnMes &mes)
+//{
+//
+//    //    std::cout << "dispatcher::addMess => " << mes.frommod + "->" + mes.tomod + ":" + mes.nammes << "\" try \n";
+//    //
+//    //    if(modules[mes.frommod] && messager) {
+//    //        if(modules[mes.tomod]) {
+//    //            Messager* msg = new Messager(mes.nammes);
+//    //            // Ужастно! указатель на map - последнее дело.
+//    //            ( *modules[mes.frommod]->mp_messagelist )[mes.nammes] = msg;
+//    //            ( *modules[mes.tomod]->mp_messagelist )[mes.nammes] = msg;
+//    //            std::cout << "dispatcher::addMess message \"" << mes.frommod + "->" + mes.tomod + ":" + mes.nammes << "\" added \n";
+//    //        }
+//    //        else if(mes.tomod == "all") { // Групповая рассылка
+//    //
+//    //        }
+//    //    } //         else if(mes.tomod == "inout"){
+//    //        //            messager->pf_tic[mes.nammes] = inout::update; //reinterpret_cast<PFunction>(*inputoutput->tic);
+//    //        ////             messager->pf_tic[mes.nammes] = modules[mes.tomod].tic;//inputoutput->update;
+//    //        //                     //dynamic_cast<PFunction>((*inputoutput).update); //reinterpret_cast<PFunction>(*inputoutput->tic);
+//    //        //         } // http://rsdn.ru/article/cpp/fastdelegate.xml
+//    //    else {
+//    //
+//    //        std::cout << "dispatcher::addMess !!! message \"" << mes.frommod + "->" + mes.tomod + ":" + mes.nammes << "\" can\'t create \n";
+//    //    };
+//    // Потом будет вызываться:
+//    //   module.messagelist["mesname"].put(message) в коде будет выглядить  messagelist["mesname"].put(message)
+//    // и module.messagelist["mesname"].get(message)                         messagelist["mesname"].get(message)
+//    // + module.messagelist["mesname"].isempty()                            messagelist["mesname"].isempty()
+//    // + module.messagelist["mesname"].clear                                messagelist["mesname"].clear()
+//    // 
+//
+//    return 0;
+//}; // dispatcher::addMess(dispatcher::returnMes mes)
 
 dispatcher::returnMes dispatcher::parserMessages(std::string inp)
 {

@@ -10,45 +10,44 @@ dispatcher::inputString to_start;
 //char** argv;
 //int argc;
 
-int ReadConfig(std::string is = ""){
+int ReadConfig(std::string is = "") {
     std::string tmp = is;
-//    FILE fl;
-    if(tmp==""){ tmp = "Kate.conf" ;};
+    //    FILE fl;
+    if (tmp == "") {
+        tmp = "Kate.conf";
+    };
     std::ifstream ConfigFile;
     ConfigFile.open(tmp);
-    
-    std::string line="";
-    if(ConfigFile){
-        while(getline(ConfigFile, line)){
-        if(!line.empty() && line[0] != '#') to_start.push_back(line);
-    /* TODO Обработка конфигурационного файла.*/
+
+    std::string line = "";
+    if (ConfigFile) {
+        while (getline(ConfigFile, line)) {
+            if (!line.empty() && line[0] != '#') to_start.push_back(line);
+            // Обработка конфигурационного файла. - происходит в диспетчере*/
         };
     };
     ConfigFile.close();
-//    std::list<std::string>::const_iterator i = to_start.begin();
-//    for(;i!=to_start.end();i++)
-//        std::cout<<":"<<*i<<":"<<"\n";
-    
+
     return 1;
 };
 
-int main(int argc,char** argv){
-//    mainargv = argv;
-//    mainargc = argc;
+int main(int argc, char** argv) {
+    //    mainargv = argv;
+    //    mainargc = argc;
 
-    std::cout<<" Kate started with params :\""<<argc<<"\""<<"\n";
-    for(int i=0;i<argc;i++)
-        std::cout<<"=\""<<argv[i]<<"\"\n";
-    
+    std::cout << " Kate started with params :\"" << argc << "\"" << "\n";
+    for (int i = 0; i < argc; i++)
+        std::cout << "=\"" << argv[i] << "\"\n";
 
-    if(ReadConfig())
-    {
+
+    if (ReadConfig()) {
         dispatcher* dsp = new dispatcher(to_start);
         dsp->start();
-//        for(;!dsp->tic(););
-//        dsp->stop("MSG");
+    } else {
+        std::cout << "Config not found!  \n";
     }
-	std::cout<<"Kate stoped  \n";
+
+    std::cout << "Kate stoped  \n";
 };
 
 

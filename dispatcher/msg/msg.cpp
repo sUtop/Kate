@@ -50,10 +50,11 @@ void MessageDispeather::tic() {
             }
         }
 
+        
         //        printLogFile(std::to_string(pf_tic.size()) + " size \n");
         for (mapThreadFunctions::iterator i = pf_tic.begin(); i != pf_tic.end(); i++) {
             printLogFile((i->first) + " sended \n");
-//            i->second(); // !! Вызов функции
+//            i->second(); // !! Вызов функции ???
         }
     } else std::this_thread::sleep_for(std::chrono::milliseconds(100));
 };

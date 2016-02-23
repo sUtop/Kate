@@ -5,10 +5,10 @@ int start( msgertype * msg){
     bd::DataBase* database = new bd::DataBase(msg,"Bd");
 
     if(database == 0) return -1;
-    
-    while(true){
+  
+//    while(true){
             database->tic();
-    }
+//    }
     return 0;
 }
 
@@ -21,6 +21,8 @@ bd::DataBase::~DataBase(){
 };
 
 void bd::DataBase::tic(){
+    
+    printLogFile("Hello !\n");
 
 //    Message* tic_msg = 0;
 //    if(mp_messagelist.size() && mp_messagelist["tic_bd"] && !mp_messagelist["tic_bd"]->empty()){
@@ -37,3 +39,4 @@ void bd::DataBase::tic(){
 //    else  std::this_thread::sleep_for(std::chrono::milliseconds(10));
     
 };
+

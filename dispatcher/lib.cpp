@@ -12,7 +12,6 @@
 
 #include "lib.h"
 
-
 Message::Message(const Message &msg) {
     m_from = msg.m_from;
     m_to = msg.m_to;
@@ -27,6 +26,9 @@ m_from(from_), m_to(to_), m_ID(ID_), m_size(size_), m_data(data_) {
 };
 
 Messager::Messager(std::string namemes_) : namemes(namemes_) {
+};
+
+Messager::Messager(const Messager& msg) : namemes(msg.namemes),from(msg.from), to(msg.to) {
 };
 
 Message* Messager::get() {
