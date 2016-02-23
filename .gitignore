@@ -1,7 +1,6 @@
 /TODO
 /nbproject/
 /other/
-/doc/
 /bin/
 /CMakeFiles/
 **/CMakeFiles/
@@ -12,4 +11,3 @@ CMakeCache.txt
 Kate
 **.sh
 **.qmake.stash
-
