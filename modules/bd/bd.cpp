@@ -2,6 +2,8 @@
 
 
 int start( msgertype * msg){
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     bd::DataBase* database = new bd::DataBase(msg,"Bd");
 
     if(database == 0) return -1;
@@ -20,8 +22,9 @@ bd::DataBase::DataBase(msgertype * msg, std::string name):
 bd::DataBase::~DataBase(){
 };
 
-void bd::DataBase::tic(){
-    
+void bd::DataBase::tic()
+{
+
     printLogFile("Hello !\n");
 
 //    Message* tic_msg = 0;

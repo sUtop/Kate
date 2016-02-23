@@ -5,22 +5,20 @@
 
 #include "lib.h"
 
-namespace phz{
-    void start();
-}
+extern "C" int start(msgertype * msg);
 
-class Physics: public Module{
-    
-    
-    
-public:
-    //! Конструктор, принимает уготованную ему очередь сообщений и 
-    // собственное имя для возможности записи лог-файла.
-    explicit Physics(msgertype *, std::string) ;
-    ~Physics();
-    
-    void tic();
-    
+namespace phz {
+
+    class Physics : private Module {
+    public:
+        //! Конструктор, принимает уготованную ему очередь сообщений и 
+        // собственное имя для возможности записи лог-файла.
+        explicit Physics(msgertype *, std::string);
+        ~Physics();
+
+        void tic();
+
+    };
 };
 
 #endif

@@ -6,20 +6,19 @@
 
 #include "math.h"
 
+//extern "C" int start_main(msgertype * msg);
+extern "C" int start(msgertype * msg);
 
-namespace inout{
-    void start_main();
-    void start();
+namespace inout {
+
+    class InputOutput : public Module {
+    public:
+        explicit InputOutput(msgertype *, std::string);
+        ~InputOutput();
+
+        void tic();
+    };
 }
-
-class InputOutput: public Module{
-    
-public:
-    InputOutput();
-    ~InputOutput();
-        
-    void tic();
-};
 
 //#include "widget.h"
 

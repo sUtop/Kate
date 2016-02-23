@@ -8,9 +8,14 @@
 #ifndef AI_H
 #define	AI_H
 
+
+
 #define LOW_MEM
 
-//#include "lib.h"
+#include "lib.h"
+
+extern "C" int start(msgertype * msg);
+
 
 #include <iostream>
 #include <vector>
