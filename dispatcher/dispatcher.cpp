@@ -30,6 +30,10 @@ dispatcher::dispatcher(inputString to_start)
         if(modTmp.correct == 1) {
             mapFunction[modTmp.namemod] = returnMod(modTmp);
             std::cout << " string = " << str_tmp << "\n";
+
+            // ! Важно инициализация списка, чтобы он не инициализировался при 
+            //      обращении
+            m_threads[modTmp.namemod] = nullptr;
         }
         // Попытка найти данные о сообщениях
         mesTmp = parserMessages(str_tmp);
@@ -46,16 +50,20 @@ dispatcher::dispatcher(inputString to_start)
             mess->to = itM->tomod;
             // Принцып двойного связывания - по имени сообщения
             // от кого сообщение можно понять из Messager
+            // Каждый модуль хранит только msgertype, а диспетчер - mapArgFunctions
             // std::map<std::string, Messager*> msgertype;
             // std::map<std::string, msgertype *> mapArgFunctions
+
             if(!m_argsToRun[mess->from]) {
                 msgertype * msgt = new msgertype;
                 m_argsToRun[mess->from] = msgt;
             }
+
             if(!m_argsToRun[mess->to]) {
                 msgertype * msgt = new msgertype;
                 m_argsToRun[mess->to] = msgt;
             }
+
             m_argsToRun[mess->from]->operator[]( itM->nammes ) = mess;
             m_argsToRun[mess->to]->operator[]( itM->nammes ) = mess;
         }
@@ -74,22 +82,24 @@ int dispatcher::start()
 
     std::cout << " Dispatcher start \n";
 
-    std::thread* th_tmp;
     for(mapListsThreads::iterator listIterator = m_threads.begin()
         ; listIterator != m_threads.end(); ++listIterator) { // Запуск потоков
-        if(listIterator->second != 0) {
-            ;
+
+        if(listIterator->second != 0 && listIterator->second != nullptr) { // Есть список потоков
 
             std::cout << " Thread " << listIterator->first << " found ! \n";
 
             if(listIterator->second != nullptr) {
                 for(thredList::iterator thredIterator = listIterator->second->begin();
                     thredIterator != listIterator->second->end(); ++thredIterator) {
-                    
-                    th_tmp = thredIterator.operator*( );
-//                    th_tmp->join();
 
-                    std::cout << " Thread " << listIterator->first << " join ! \n";
+
+                    std::thread* th_tmp;
+
+                    th_tmp = thredIterator.operator*( );
+                    //                    th_tmp->join();
+
+                    std::cout << " Thread " << listIterator->first << " join, try Detach ! \n";
 
                     //                if(th_tmp->joinable())// && j->first != "mod:modules/inout")
                     {
@@ -100,10 +110,11 @@ int dispatcher::start()
         }
     }
 
-    //    for(auto tR = m_toRun.begin(); tR != m_toRun.end(); ++tR) { // Запуск модулей в главном потоке
-    //        auto run_tmp = tR->second;
-    //        //            ( *run_tmp )([tR->first] );
-    //    };
+    for(auto tR = m_toRun.begin(); tR != m_toRun.end(); ++tR) { // Запуск модулей в главном потоке
+        auto run_tmp = tR->second;
+        std::cout << " Try to run    " << tR->first << "  runModule \n";
+        ( *run_tmp )( m_argsToRun[tR->first] );
+    };
 
     return 0;
 };
@@ -169,26 +180,45 @@ int dispatcher::addThread(dispatcher::returnMod &mod)
         if(f == nullptr) return -1;
         std::cout << " Loaded library " << mod.namemod << " with name " << libname << "\n";
 
-        start_function init_func = reinterpret_cast<start_function>( f );
+        start_function init_func = reinterpret_cast<start_function> ( f );
 
-        runmodule = new std::thread(init_func, m_argsToRun[mod.namemod]);
 
-        //dlclose(handle);
-
-        if(runmodule != nullptr) {
-            if(m_threads[mod.namemod] == nullptr)
+        if(init_func != nullptr && init_func != 0) {
+            if(m_threads[mod.namemod] == nullptr) {
                 m_threads[mod.namemod] = new thredList();
-            for(int i = 0; i < mod.number; ++i)m_threads[mod.namemod]->push_back(runmodule); // Заполняем список потоков 
-            std::cout << "add :" << mod.namemod << ": X" << mod.number << "  times. \n";
+                std::cout << " New threadList with name " << mod.namemod << "  Created! \n";
+            }
+
+            if(mod.number > 0) {
+                for(int i = 0; i < mod.number; ++i) {
+                    runmodule = new std::thread(init_func, m_argsToRun[mod.namemod]);
+                    m_threads[mod.namemod]->push_back(runmodule); // Заполняем список потоков 
+                }
+                std::cout << "add :" << mod.namemod << ": X" << mod.number << "  times.  " << runmodule << "\n";
+            }
+            else {
+                //typedef std::map<std::string, start_function> mapThreadFunctions;
+                m_toRun[mod.namemod] = init_func;
+                // ! Функция на запуск! 
+            }
+
             return 1;
         };
 
-    } else {
-        
     }
-    
+    else {
+
+    }
+
     return 0;
 };
+
+dispatcher::~dispatcher()
+{
+    // Закрытие всех библиотек
+    platform::closeAll();
+
+}; //dispatcher::~dispather()
 
 dispatcher::returnMod dispatcher::parserModules(std::string inp)
 {
@@ -364,6 +394,7 @@ dispatcher::returnMes dispatcher::parserMessages(std::string inp)
     return output;
 
 }; // void dispatcher::parserMessages(std::string in)
+
 
 
 

@@ -10,7 +10,7 @@ int start(msgertype * msg)
 
     if(phzi == 0) return -1;
 
-    std::cout << " Hi !! I'm BD!\n";
+    std::cout << " Hi !! I'm PHZ!\n";
     //    while(true){
     phzi->tic();
     //    }

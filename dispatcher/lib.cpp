@@ -77,9 +77,9 @@ void Module::openLogFile() {
         m_logFile.open(m_logFileName, std::ios_base::out | std::ios_base::ate);
         m_logFile << "";
         m_logFile.close();
-        std::cout << "Opened" << m_logFileName;
+        std::cout << "Module::openLogFile:: Opened  " << m_logFileName << " !\n";
     } catch (...) {
-        std::cout << "Big Fail! " << m_logFileName;
+        std::cout << "Module::openLogFile::Big Fail! Can't opened  " << m_logFileName << " \n";
         ;
     };
 };

@@ -79,6 +79,8 @@ public:
     int remThread(std::string);
     //!< Удаление потока по имени ? 
 
+    ~dispatcher();
+    
 //    int addMess(returnMes &);
     //!< Добавление типа сообщения в список
 

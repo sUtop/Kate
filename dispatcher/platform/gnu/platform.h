@@ -35,6 +35,12 @@ namespace platform {
         return f;
     }
 
+    void closeAll() {
+        for(auto it = LoadedLibrary.begin(); it != LoadedLibrary.end(); ++it) {
+            std::cout << "closed Library " << it->first << " \n ";
+            dlclose(it->second);
+        }
+    }
 
 }
 
