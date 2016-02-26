@@ -64,7 +64,7 @@ void Keyboard::keyReleaseEvent(QKeyEvent *pe){
 //    if( !pe->isAutoRepeat() )
 //        std::cout<<" - Release key "<<pe->key()<<'\n';
 
-//    for(int i=0;i<AR_KEYS;i++) keys_mask[i] = 0;
+//    for(int i=0;i<AR_KEYS;++i) keys_mask[i] = 0;
 //    memcpy(keys_mask,0,sizeof(keys_mask));
     if( !pe->isAutoRepeat() )
     switch (pe->key())

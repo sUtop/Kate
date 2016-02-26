@@ -31,10 +31,10 @@ void MessageDispeather::tic() {
     //    std::TDateTime;
     std::time(&time);
     if (time > curr_tic) {
-        curr_tic++; //std::chrono::seconds(1);//500000; // минимум - 1 секунда
+        ++curr_tic; //std::chrono::seconds(1);//500000; // минимум - 1 секунда
 
 
-        for (msgertype::const_iterator i = mp_messagelist->begin(); i != mp_messagelist->end(); i++) {
+        for (msgertype::const_iterator i = mp_messagelist->begin(); i != mp_messagelist->end(); ++i) {
             std::clock_t* _tic = new std::clock_t(std::clock()); // Область памяти *data
             Message tic_msg("msg", "ANY", 0, sizeof (std::clock_t*), static_cast<dataType> (_tic));
 
@@ -52,7 +52,7 @@ void MessageDispeather::tic() {
 
         
         //        printLogFile(std::to_string(pf_tic.size()) + " size \n");
-        for (mapThreadFunctions::iterator i = pf_tic.begin(); i != pf_tic.end(); i++) {
+        for (mapThreadFunctions::iterator i = pf_tic.begin(); i != pf_tic.end(); ++i) {
             printLogFile((i->first) + " sended \n");
 //            i->second(); // !! Вызов функции ???
         }
@@ -79,7 +79,7 @@ void MessageDispeather::tic() {
 // 
 //    msgertype* msg = new msgertype("tic") ??? или msg = messager.tic
 //    std::map<std::string,std::thread*>::iterator j = threads.begin();
-//    for(;j!=threads.end();j++){
+//    for(;j!=threads.end();++j){
 //        j->messagelist["tic"] = msg;
 
 
