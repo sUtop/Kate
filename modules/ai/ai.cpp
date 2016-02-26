@@ -67,9 +67,9 @@ void Synaps::change_w(ldouble nu,ldouble f_derivative,ldouble signal){
 void Synaps::print(){
     std::cout<<"Synaps::print Synaps on "<<layer<<" layer from "<<index_i+1<<" to "<<index_j+1<<" neuron \n w list ";
 #ifndef LOW_MEM
-    for(int i=0;i<w.size();i++) std::cout<<w[i]<<" ";
+    for(int i=0;i<w.size();++i) std::cout<<w[i]<<" ";
     std::cout<<"\n Synapses sigmas ";
-    for(int i=0;i<sigma.size();i++)
+    for(int i=0;i<sigma.size();++i)
         std::cout<<sigma.back()<<"  ";
     std::cout<<"\n";
 #endif
@@ -92,7 +92,7 @@ Neuron::Neuron(int dem_,        // Размерность выходных зн�
 #else
     input.push_back(0);
 #endif    
-    for(int j=0;j<dem;j++){
+    for(int j=0;j<dem;++j){
         synapses.push_back(Synaps(layer,index_i,j,rnd));
     }
 }; // Neuron::Neuron
@@ -114,14 +114,14 @@ std::vector<ldouble> Neuron::impulse(ldouble in){ // Запускает проц
 #else
     input.push_back(in); //
 #endif
-    for(int i=0;i<synapses.size();i++)
+    for(int i=0;i<synapses.size();++i)
         out[i] = synapses[i].impuls(f(in));
     return out;
 }; // Neuron::impulse
     
 void Neuron::correct(std::vector<ldouble> next){     // Процедура корректировки весов
     std::vector<ldouble> out(synapses.size());
-    for(int i=0;i<synapses.size();i++)
+    for(int i=0;i<synapses.size();++i)
 #ifdef LOW_MEM    
         synapses[i].change_w(nu,f_derivative(next[i]),f(input));
 #else
@@ -140,7 +140,7 @@ ldouble Neuron::calculate_sigmas(std::vector<ldouble> sigmas){  // Процед�
         print();
         return 0.0;
     }
-    for(int i=0;i<dem;i++)
+    for(int i=0;i<dem;++i)
         out += synapses[i].calculate_sigma(sigmas[i]);
 //    std::cout<<" Neuron out :"<<out<<"\n";
     print();
@@ -150,7 +150,7 @@ ldouble Neuron::calculate_sigmas(std::vector<ldouble> sigmas){  // Процед�
 void Neuron::print(){
 #ifdef LOG
     std::cout<<"Neuron::print: Neur["<<index_i<<"] in layer "<<layer<<" dem = "<<dem<<"\n";
-    for(int i=0;i<synapses.size();i++)
+    for(int i=0;i<synapses.size();++i)
         synapses[i].print_short();
 #endif
 }; // Neuron::print
@@ -163,7 +163,7 @@ NeuralLayer::NeuralLayer(int dem_,     int nextdem_,   int layer_,Random *rnd, b
     std::cout<<"Layer "<<layer<<" dem ="<<dem<<" nextdem ="<<nextdem<<" is_last = "<<is_last<<" \n";
 #endif
     if(is_last) nextdem = 0;
-    for(int i=0;i<dem;i++){
+    for(int i=0;i<dem;++i){
         Layer.push_back(Neuron(nextdem,layer,i,rnd)); // Мы передаем размерность следующего слоя
     };
 } // NeuralLayer::NeuralLayer
@@ -174,17 +174,17 @@ std::vector<ldouble> NeuralLayer::impulses(std::vector<ldouble> inp){
     if(!is_last){
         std::vector<ldouble> out(nextdem);
     
-    for(int i=0;i<dem;i++){
+    for(int i=0;i<dem;++i){
 //        Layer[i].input.push_back(inp[i]);
         std::vector<ldouble> tmp = Layer[i].impulse(inp[i]);
-        for(int j=0;j<nextdem;j++)
+        for(int j=0;j<nextdem;++j)
             out[j] += tmp[j];
     }
     return out;
     }
     else{
         std::vector<ldouble> out(dem);
-        for(int i=0;i<dem;i++){
+        for(int i=0;i<dem;++i){
             out[i] = Layer[i].f(inp[i]);
 #ifdef LOW_MEM
             Layer[i].input = inp[i]; //
@@ -205,7 +205,7 @@ std::vector<ldouble> NeuralLayer::calculate_sigmas(std::vector<ldouble> sigmas_)
     print();
 #endif
     if(!is_last){
-        for(int i=0;i<dem;i++)
+        for(int i=0;i<dem;++i)
             out[i] += Layer[i].calculate_sigmas(sigmas);
     }else return sigmas_;
 #ifdef LOG
@@ -216,13 +216,13 @@ std::vector<ldouble> NeuralLayer::calculate_sigmas(std::vector<ldouble> sigmas_)
 
 
 void NeuralLayer::correct(std::vector<ldouble> next){
-    for(int i=0;i<dem;i++)
+    for(int i=0;i<dem;++i)
         Layer[i].correct(next);
 }; // NeuralLayer::correct
 
 std::vector<ldouble> NeuralLayer::inputs(){
     std::vector<ldouble> out(dem);
-    for(int i=0;i<dem;i++)
+    for(int i=0;i<dem;++i)
 #ifdef LOW_MEM
         out[i] = Layer[i].input;
 #else
@@ -235,11 +235,11 @@ void NeuralLayer::print(){
 #ifdef LOG
     std::cout<<"NeuralLayer::print Layer of neurons with dem = "<<dem<<" nextdem ="<<nextdem<<" layer = "<<layer<<" is_last ="<<is_last<<"\n";
     std::cout<<" NeuralLayer::print sigmas:";
-    for(int i=0;i<sigmas.size();i++)
+    for(int i=0;i<sigmas.size();++i)
         std::cout<<sigmas[i]<<" ";
     std::cout<<"\n";
     std::cout<<" NeuralLayer::print data:\n";
-    for(int i=0;i<Layer.size();i++)
+    for(int i=0;i<Layer.size();++i)
         Layer[i].print();
 #endif
 };
@@ -251,11 +251,11 @@ void NeuralLayer::save(std::fstream logFile){
 //    logFile.close();
     
 //    std::cout<<" NeuralLayer::print sigmas:";
-//    for(int i=0;i<sigmas.size();i++)
+//    for(int i=0;i<sigmas.size();++i)
 //        std::cout<<sigmas[i]<<" ";
 //    std::cout<<"\n";
 //    std::cout<<" NeuralLayer::print data:\n";
-//    for(int i=0;i<Layer.size();i++)
+//    for(int i=0;i<Layer.size();++i)
 //        Layer[i].print();
 } 
 
@@ -269,7 +269,7 @@ NeuralNetwork::NeuralNetwork(std::vector<int> NumNeurons, //  = {3,3,3} Разм
 #endif
     rnd = new Random;
 
-    for(int i=1;i<NumNeurons.size();i++)
+    for(int i=1;i<NumNeurons.size();++i)
         Layers.push_back(NeuralLayer(NumNeurons[i-1],NumNeurons[i],i,rnd,false));
         
     Layers.push_back(NeuralLayer(NumNeurons.back(),0,NumNeurons.size(),rnd,true)); // Последний слой - заполняется отдельно
@@ -283,24 +283,24 @@ std::vector<ldouble> NeuralNetwork::train(std::vector<ldouble> in,std::vector<ld
     // Рассчет
 #ifdef LOG
     std::cout<<"NeuralNetwork::train: Input train set ";
-    for(int i=0;i<in.size();i++)
+    for(int i=0;i<in.size();++i)
         std::cout<<in[i]<<" ";
     std::cout<<"\n";
     std::cout<<"NeuralNetwork::train: Output train set ";
-    for(int i=0;i<out.size();i++)
+    for(int i=0;i<out.size();++i)
         std::cout<<out[i]<<" ";
     std::cout<<"\n";
 #endif
 
     std::vector<ldouble> result = in;
-    for(int i=0;i<Layers.size();i++)
+    for(int i=0;i<Layers.size();++i)
         result = Layers[i].impulses(result);
     std::vector<ldouble> delta(out.size());
-    for(int i=0;i<out.size();i++)
+    for(int i=0;i<out.size();++i)
         delta[i] = out[i] - result[i];
 #ifdef LOG
     std::cout<<"NeuralNetwork::train: result vector ";
-    for(int i=0;i<result.size();i++)
+    for(int i=0;i<result.size();++i)
         std::cout<<result[i]<<"\t";
     std::cout<<"\n";
 #endif
@@ -315,7 +315,7 @@ std::vector<ldouble> NeuralNetwork::train(std::vector<ldouble> in,std::vector<ld
     std::cout<<"NeuralNetwork::train: Sigma calculated ! \n";
 #endif
 
-    for(int i=0;i<Layers.size()-1;i++)
+    for(int i=0;i<Layers.size()-1;++i)
         Layers[i].correct(Layers[i+1].inputs());
 
 #ifdef LOG
@@ -328,7 +328,7 @@ std::vector<ldouble> NeuralNetwork::test(std::vector<ldouble> in){ // тести
         
     // Рассчет
     std::vector<ldouble> result = in;
-    for(int i=0;i<Layers.size();i++)
+    for(int i=0;i<Layers.size();++i)
         result = Layers[i].impulses(result);
     
 #ifdef LOG
@@ -341,7 +341,7 @@ std::vector<ldouble> NeuralNetwork::test(std::vector<ldouble> in){ // тести
 void NeuralNetwork::print(){
 #ifdef LOG
     std::cout<<"Exist NeuralNetwork with "<<Layers.size()<<" layers \n"; 
-    for(int i=0;i<Layers.size();i++)
+    for(int i=0;i<Layers.size();++i)
     {
         Layers[i].print();
     }
@@ -455,7 +455,7 @@ int main(){
     std::default_random_engine generator;
     std::uniform_real_distribution<double> distribution = std::uniform_real_distribution<double>(-1,8);
     int cur = 0;
-    for(int i=0;i<18000;i++){
+    for(int i=0;i<18000;++i){
         cur = distribution(generator);
         switch(cur){
             case 0:{
@@ -516,43 +516,43 @@ int main(){
     int maxindex = 0;
     result = NN.test(suma9);
     std::cout<<" Result summ (without train) 9 = ";
-    for(int i=0;i<result.size();i++) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
+    for(int i=0;i<result.size();++i) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
     std::cout<<"\t"<<maxindex+1<<" \n";
     result = NN.test(sumb9);
     std::cout<<" Result summ (without train) 9 = ";
-    for(int i=0;i<result.size();i++) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
+    for(int i=0;i<result.size();++i) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
     std::cout<<"\t"<<maxindex+1<<" \n";
     result = NN.test(sumb1);
     std::cout<<" Result summ 1 = ";
-    for(int i=0;i<result.size();i++) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
+    for(int i=0;i<result.size();++i) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
     std::cout<<"\t"<<maxindex+1<<" \n";
     result = NN.test(sumc2);
     std::cout<<" Result summ 2 = ";
-    for(int i=0;i<result.size();i++) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
+    for(int i=0;i<result.size();++i) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
     std::cout<<"\t"<<maxindex+1<<" \n";
     result = NN.test(sumd3);
     std::cout<<" Result summ 3 = ";
-    for(int i=0;i<result.size();i++) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
+    for(int i=0;i<result.size();++i) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
     std::cout<<"\t"<<maxindex+1<<" \n";
     result = NN.test(sume4);
     std::cout<<" Result summ 4 = ";
-    for(int i=0;i<result.size();i++) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
+    for(int i=0;i<result.size();++i) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
     std::cout<<"\t"<<maxindex+1<<" \n";
     result = NN.test(sumf5);
     std::cout<<" Result summ 5 = ";
-    for(int i=0;i<result.size();i++) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
+    for(int i=0;i<result.size();++i) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
     std::cout<<"\t"<<maxindex+1<<" \n";
     result = NN.test(sume6);
     std::cout<<" Result summ 6 = ";
-    for(int i=0;i<result.size();i++) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
+    for(int i=0;i<result.size();++i) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
     std::cout<<"\t"<<maxindex+1<<" \n";
     result = NN.test(sumd7);
     std::cout<<" Result summ 7 = ";
-    for(int i=0;i<result.size();i++) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
+    for(int i=0;i<result.size();++i) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
     std::cout<<"\t"<<maxindex+1<<" \n";
     result = NN.test(sumc8);
     std::cout<<" Result summ 8 = ";
-    for(int i=0;i<result.size();i++) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
+    for(int i=0;i<result.size();++i) {if(result[i] > result[maxindex]) maxindex = i; std::cout<<result[i]<<" ";}
     std::cout<<"\t"<<maxindex+1<<" \n";
     
 //    std::vector<ldouble> test1= {0.1,0.2};//,0.3};//,0.4,0.5};
@@ -561,26 +561,26 @@ int main(){
 //    std::vector<ldouble> delta;
 //    ldouble mnk=0;
 //    std::cout<<" ======================   RUN! ==================== \n";
-//    for(int i=0;i<100;i++) {
+//    for(int i=0;i<100;++i) {
 //        delta = NN.train(test1,test1);
 //        mnk = 0;
-//        for(int i=0;i<delta.size();i++) mnk += delta[i] * delta[i];
+//        for(int i=0;i<delta.size();++i) mnk += delta[i] * delta[i];
 //        std::cout<<"  "<<mnk<<" \t ";
 //        delta = NN.train(test1,test3);
 //        mnk = 0;
-//        for(int i=0;i<delta.size();i++) mnk += delta[i] * delta[i];
+//        for(int i=0;i<delta.size();++i) mnk += delta[i] * delta[i];
 //        std::cout<<"  "<<mnk<<" \t ";
 //        delta = NN.train(test1,test1);
 //        mnk = 0;
-//        for(int i=0;i<delta.size();i++) mnk += delta[i] * delta[i];
+//        for(int i=0;i<delta.size();++i) mnk += delta[i] * delta[i];
 //        std::cout<<"  "<<mnk<<" \t ";
 //        delta = NN.train(test2,test2);
 //        mnk = 0;
-//        for(int i=0;i<delta.size();i++) mnk += delta[i] * delta[i];
+//        for(int i=0;i<delta.size();++i) mnk += delta[i] * delta[i];
 //        std::cout<<"  "<<mnk<<" \t ";
 //        delta = NN.train(test3,test3);
 //        mnk = 0;
-//        for(int i=0;i<delta.size();i++) mnk += delta[i] * delta[i];
+//        for(int i=0;i<delta.size();++i) mnk += delta[i] * delta[i];
 //        std::cout<<"  "<<mnk<<" \n ";
 //    }
     // Прохождение сетью тестовых заданий

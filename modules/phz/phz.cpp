@@ -1,12 +1,16 @@
 #include "phz.h"
 
+
+#include <iostream>
+
 int start(msgertype * msg)
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     phz::Physics* phzi = new phz::Physics(msg, "phz");
 
     if(phzi == 0) return -1;
 
+    std::cout << " Hi !! I'm BD!\n";
     //    while(true){
     phzi->tic();
     //    }

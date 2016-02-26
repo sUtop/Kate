@@ -23,7 +23,7 @@ dispatcher::dispatcher(inputString to_start)
     returnMod modTmp;
     returnMes mesTmp;
 
-    for(; i != to_start.end(); i++) {
+    for(; i != to_start.end(); ++i) {
         str_tmp = *i;
         // Попытка найти данные о модулях
         modTmp = parserModules(str_tmp);
@@ -76,7 +76,7 @@ int dispatcher::start()
 
     std::thread* th_tmp;
     for(mapListsThreads::iterator listIterator = m_threads.begin()
-        ; listIterator != m_threads.end(); listIterator++) { // Запуск потоков
+        ; listIterator != m_threads.end(); ++listIterator) { // Запуск потоков
         if(listIterator->second != 0) {
             ;
 
@@ -84,7 +84,7 @@ int dispatcher::start()
 
             if(listIterator->second != nullptr) {
                 for(thredList::iterator thredIterator = listIterator->second->begin();
-                    thredIterator != listIterator->second->end(); thredIterator++) {
+                    thredIterator != listIterator->second->end(); ++thredIterator) {
                     
                     th_tmp = thredIterator.operator*( );
 //                    th_tmp->join();
@@ -100,7 +100,7 @@ int dispatcher::start()
         }
     }
 
-    //    for(auto tR = m_toRun.begin(); tR != m_toRun.end(); tR++) { // Запуск модулей в главном потоке
+    //    for(auto tR = m_toRun.begin(); tR != m_toRun.end(); ++tR) { // Запуск модулей в главном потоке
     //        auto run_tmp = tR->second;
     //        //            ( *run_tmp )([tR->first] );
     //    };
@@ -162,7 +162,8 @@ int dispatcher::addThread(dispatcher::returnMod &mod)
 
     std::cout << "      Libname " << libname << "\n";
 
-    if(mod.namemod != "msg") {
+    // Если запуск происходит в отдельном потоке
+    if(mod.number > 0) {
         void * f = platform::OpenLibrary(libname);
 
         if(f == nullptr) return -1;
@@ -170,26 +171,22 @@ int dispatcher::addThread(dispatcher::returnMod &mod)
 
         start_function init_func = reinterpret_cast<start_function>( f );
 
-        //        std::cout << "  ~+~+~  " << m_argsToRun[mod.namemod]->operator [](mod.namemod)->namemes << " \n";
-
         runmodule = new std::thread(init_func, m_argsToRun[mod.namemod]);
 
-        //        (*init_func)(m_argsToRun[mod.namemod]);
-
-        //int x = (*init_func)();
         //dlclose(handle);
-        //printf("Return code: %dn",x);
-
 
         if(runmodule != nullptr) {
             if(m_threads[mod.namemod] == nullptr)
                 m_threads[mod.namemod] = new thredList();
-            for(int i = 0; i < mod.number; i++)m_threads[mod.namemod]->push_back(runmodule); // Заполняем список потоков 
+            for(int i = 0; i < mod.number; ++i)m_threads[mod.namemod]->push_back(runmodule); // Заполняем список потоков 
             std::cout << "add :" << mod.namemod << ": X" << mod.number << "  times. \n";
             return 1;
         };
 
+    } else {
+        
     }
+    
     return 0;
 };
 
@@ -240,7 +237,7 @@ dispatcher::returnMod dispatcher::parserModules(std::string inp)
         std::string strnumber = "";
         while(std::isdigit(in[index])) {
             strnumber += in[index];
-            index++;
+            ++index;
         }
 
         int number = std::stoi(strnumber);

@@ -1,5 +1,6 @@
 #include "bd.h"
 
+#include <iostream>
 
 int start( msgertype * msg){
 
@@ -8,6 +9,7 @@ int start( msgertype * msg){
 
     if(database == 0) return -1;
   
+    std::cout << " Hi !! I'm BD!\n";
 //    while(true){
             database->tic();
 //    }

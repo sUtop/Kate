@@ -107,13 +107,13 @@ Widget::Widget(QWidget *parent)
     resize(600,600);
 
     keyb.hight = 1.0f;
-//    for(int i=0;i<numRandBox;i++){
+//    for(int i=0;i<numRandBox;++i){
 //        shiftx[i] = (0.5 - ((float)rand())/RAND_MAX)*2;
 //        shifty[i] = (0.5 - ((float)rand())/RAND_MAX)*2;
 //        shiftz[i] = (0.5 - ((float)rand())/RAND_MAX)*2;
 //    }
 
-    for(int i=0;i<AR_KEYS;i++) keyb.keys_mask[i] = 0;
+    for(int i=0;i<AR_KEYS;++i) keyb.keys_mask[i] = 0;
 }
 
 void Widget::initializeGL()
@@ -210,12 +210,12 @@ void Widget::paintGL() // рисование
     glBegin(GL_QUADS);
     vector v={0,0,0},v_;
 
-for(int m=0;m<10;m++)
-    for(int l=0;l<5;l++){
-    for(int j=0;j<5;j++){
-    for(int k=0;k<5;k++){
+for(int m=0;m<10;++m)
+    for(int l=0;l<5;++l){
+    for(int j=0;j<5;++j){
+    for(int k=0;k<5;++k){
     int posx=0,posy=0,posz=0;
-    for(int i=0;i<7*7*7;i++){
+    for(int i=0;i<7*7*7;++i){
        posx=i%7;
        posy=(i/7)%7;
        posz=(i/7/7)%7;
@@ -273,10 +273,10 @@ for(int m=0;m<10;m++)
     char str[30];
     sprintf(str," xRot = %f \t xTra = %f ",keyb.xRot,keyb.xTra);
     renderText(10,10,QString::fromStdString(str));
-    for(int i=0;i<30;i++)str[i]=0;
+    for(int i=0;i<30;++i)str[i]=0;
     sprintf(str," yRot = %f \t yTra = %f ",keyb.yRot,keyb.yTra);
     renderText(10,20,QString::fromStdString(str));
-    for(int i=0;i<30;i++)str[i]=0;
+    for(int i=0;i<30;++i)str[i]=0;
     sprintf(str," zRot = %f \t zTra = %f ",keyb.zRot,keyb.zTra);
     renderText(10,30,QString::fromStdString(str));
     sprintf(str,"mouseX = %f \t mouseY = %f  ",keyb.ptrMousePosition.x(),keyb.ptrMousePosition.y());
@@ -301,12 +301,12 @@ void Widget::drawRectangle(vector v,float size,char axis,int tap)
     switch (axis){
     case AR_TO_X : {
         switch (tap) {
-            case 1:{for(int i=0;i<4;i++){
+            case 1:{for(int i=0;i<4;++i){
                         glVertex3f( v.x
                                    ,v.y - ((i == 1)||(i == 2)) * size
                                    ,v.z - ((i == 2)||(i == 3)) * size);}
                      break;}
-            case -1:{for(int i=0;i<4;i++){
+            case -1:{for(int i=0;i<4;++i){
                         glVertex3f( v.x
                                    ,v.y - ((i == 2)||(i == 3)) * size
                                    ,v.z - ((i == 1)||(i == 2)) * size);}
@@ -316,12 +316,12 @@ void Widget::drawRectangle(vector v,float size,char axis,int tap)
     }
     case AR_TO_Y : {
             switch (tap){
-            case 1:{for(int i=0;i<4;i++){
+            case 1:{for(int i=0;i<4;++i){
                 glVertex3f( v.x - ((i == 1)||(i == 2)) * size
                            ,v.y
                            ,v.z - ((i == 2)||(i == 3)) * size);}
                 break;}
-            case -1:{for(int i=0;i<4;i++){
+            case -1:{for(int i=0;i<4;++i){
                 glVertex3f( v.x - ((i == 2)||(i == 3)) * size
                            ,v.y
                            ,v.z - ((i == 1)||(i == 2)) * size);}
@@ -332,13 +332,13 @@ void Widget::drawRectangle(vector v,float size,char axis,int tap)
     case AR_TO_Z:{
             switch (tap){
                 case 1:{
-                    for(int i=0;i<4;i++){
+                    for(int i=0;i<4;++i){
                         glVertex3f( v.x - ((i == 1)||(i == 2)) * size
                                    ,v.y - ((i == 2)||(i == 3)) * size
                                    ,v.z);}
                     break;}
             case -1:{
-                for(int i=0;i<4;i++){
+                for(int i=0;i<4;++i){
                     glVertex3f( v.x - ((i == 2)||(i == 3)) * size
                                ,v.y - ((i == 1)||(i == 2)) * size
                                ,v.z);}
@@ -354,7 +354,7 @@ void Widget::drawRectangleTop(vector v,float size,char axis)
     vector v1={0,0,0},v2={0,0,0},v3={0,0,0};
     switch (axis){
     case AR_TO_X : {
-        for(int i=0;i<4;i++){
+        for(int i=0;i<4;++i){
             glVertex3f(  v.x
                         ,v.y - ((i == 1)||(i == 2)) * size
                         ,v.z - ((i == 2)||(i == 3)) * size);
@@ -367,7 +367,7 @@ void Widget::drawRectangleTop(vector v,float size,char axis)
         break;
     }
     case AR_TO_Y : {
-        for(int i=0;i<4;i++){
+        for(int i=0;i<4;++i){
             glVertex3f(  v.x - ((i == 2)||(i == 3)) * size
                         ,v.y
                         ,v.z - ((i == 1)||(i == 2)) * size);
@@ -380,7 +380,7 @@ void Widget::drawRectangleTop(vector v,float size,char axis)
         break;
     }
     case AR_TO_Z:{
-        for(int i=0;i<4;i++){
+        for(int i=0;i<4;++i){
             glVertex3f(  v.x - ((i == 1)||(i == 2)) * size
                         ,v.y - ((i == 2)||(i == 3)) * size
                         ,v.z);
@@ -400,7 +400,7 @@ void Widget::drawRectangleFront(vector v,float size,char axis)
     vector v1={0,0,0},v2={0,0,0},v3={0,0,0};
     switch (axis){
     case AR_TO_X : {
-        for(int i=0;i<4;i++){
+        for(int i=0;i<4;++i){
             glVertex3f(  v.x
                         ,v.y - ((i == 2)||(i == 3)) * size
                         ,v.z - ((i == 1)||(i == 2)) * size);
@@ -413,7 +413,7 @@ void Widget::drawRectangleFront(vector v,float size,char axis)
         break;
     }
     case AR_TO_Y : {
-        for(int i=0;i<4;i++){
+        for(int i=0;i<4;++i){
             glVertex3f(  v.x - ((i == 1)||(i == 2)) * size
                         ,v.y
                         ,v.z - ((i == 2)||(i == 3)) * size);
@@ -426,7 +426,7 @@ void Widget::drawRectangleFront(vector v,float size,char axis)
         break;
     }
     case AR_TO_Z:{
-        for(int i=0;i<4;i++){
+        for(int i=0;i<4;++i){
             glVertex3f(  v.x - ((i == 2)||(i == 3)) * size
                         ,v.y - ((i == 1)||(i == 2)) * size
                         ,v.z);

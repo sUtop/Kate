@@ -36,7 +36,7 @@
 
 #include <list>
 
-#define _LIBCPP_IOSTREAM // Запрет подключать <iostream>  в модулях
+//#define _LIBCPP_IOSTREAM // Запрет подключать <iostream>  в модулях
 
 // попробовать сделать через неблокирующие очереди
 
@@ -103,7 +103,7 @@ class Module {
     std::string m_name; //!< Имя модуля.
 
 
-    void openLogFile(); //!< Закрытие лог-файла
+    void openLogFile(); //!< Открытие же лог-файла
     explicit Module(); //!< Умолчательный конструктор запрещен
     Module(Module&); //!< Конструктор копирования запрещен
     Module &operator=(const Module&); //!< Оператор присваивания запрещен

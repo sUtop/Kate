@@ -9,22 +9,33 @@
 #define	PLATFORM_H
 
 namespace platform {
-    #include <string>
-    #include <dlfcn.h> // ! dlopen и подобные
-//    #include <dlsym.h>
-    const std::string prefix = "./lib";  // Указание директории обязательно! (./)
+#include <string>
+#include <dlfcn.h> // ! dlopen и подобные
+    //    #include <dlsym.h>
+    const std::string prefix = "./lib"; // Указание директории обязательно! (./)
     const std::string suffix = ".so";
+
+#include <map> 
+
+    static std::map<std::string, void *> LoadedLibrary;
+    //!< Список уже загруженных библиотек с хэндлами
+
     void * OpenLibrary(std::string libname) {
 
-        void * handle = dlopen(libname.c_str(), RTLD_LAZY);
-        std::cout << " dlopen " << libname << " opened with code " << handle << " \n";
-        if(!handle) return nullptr;
-        void * f = dlsym(handle, "start");
+        if (LoadedLibrary[libname] == nullptr) {
+            void * handle = dlopen(libname.c_str(), RTLD_LAZY);
+            std::cout << " dlopen " << libname << " opened with code " << handle << " \n";
+            if (!handle) return nullptr;
+            LoadedLibrary[libname] = handle;
+        } else std::cout << " Ha ! I found your lib - " << libname << " it is on " << LoadedLibrary[libname] << "\n";
+        
+
+        void * f = dlsym(LoadedLibrary[libname], "start");
         std::cout << " dlsym " << "start" << " opened with code " << f << " \n";
         return f;
     }
 
-    
+
 }
 
 

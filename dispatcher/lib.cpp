@@ -65,17 +65,21 @@ Module::Module(msgertype * msg, std::string name_) {
     m_name = name_;
     m_logFileName = "." + m_name + "_log_file";
     mp_messagelist = msg;
+    openLogFile();
 };
 
 Module::~Module() {
 };
 
+#include <iostream>
 void Module::openLogFile() {
     try {
         m_logFile.open(m_logFileName, std::ios_base::out | std::ios_base::ate);
         m_logFile << "";
         m_logFile.close();
+        std::cout << "Opened" << m_logFileName;
     } catch (...) {
+        std::cout << "Big Fail! " << m_logFileName;
         ;
     };
 };

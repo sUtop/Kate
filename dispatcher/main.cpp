@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
     //    mainargc = argc;
 
     std::cout << " Kate started with params :\"" << argc << "\"" << "\n";
-    for (int i = 0; i < argc; i++)
+    for (int i = 0; i < argc; ++i)
         std::cout << "=\"" << argv[i] << "\"\n";
 
 
@@ -47,6 +47,8 @@ int main(int argc, char** argv) {
         std::cout << "Config not found!  \n";
     }
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(100000));
+    
     std::cout << "Kate stoped  \n";
 };
 
