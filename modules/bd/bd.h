@@ -13,8 +13,8 @@ namespace bd {
         
         // Пока концепция - записывать все в файлы
         
-//        typedef std::map<std::string, std::fstream> data_type;
-//        data_type m_files; //!< Список файлов с данными
+        typedef std::map<std::string, std::fstream> data_type;
+        data_type m_files; //!< Список файлов с данными
         
         
     public:

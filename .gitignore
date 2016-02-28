@@ -5,9 +5,16 @@
 /CMakeFiles/
 **/CMakeFiles/
 Makefile
+***/Makefile
 CMakeCache.txt
 **/CMakeCache.txt
-**/*.cmake
+
+***.cmake
+***make
 Kate
 **.sh
 **.qmake.stash
+
+**moc*.cpp
+
+*.make

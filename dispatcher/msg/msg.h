@@ -22,20 +22,20 @@
 
 #include "lib.h"
 
+    void msg_start(mapArgFunctions * messagelist);
+
+
+
 namespace msg {
-    void start(msgertype * messagelist);
-}
-
-
-
 class MessageDispeather : private Module {
     //    std::clock_t    curr_tic;
+    mapArgFunctions * m_mes;
     std::time_t curr_tic;
 public:
     mapThreadFunctions pf_tic; //< Список функций для запуска по тику
     //    msgertype 
     //    Messager
-    MessageDispeather(msgertype *);
+    MessageDispeather(mapArgFunctions *);
     ~MessageDispeather();
     void tic();
 
@@ -49,6 +49,6 @@ public:
     //  2. по запросу отправителя - функция from вызывается один раз
 
 };
-
+};
 
 #endif

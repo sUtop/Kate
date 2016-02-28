@@ -24,7 +24,7 @@
 #include "lib.h"
 
 #include "msg.h"
-extern MessageDispeather *messager;
+extern msg::MessageDispeather *messager;
 
 /* \brief Диспетчер потоков.
  *   Динамически вызывает модули, читает конфигурацию, создает потоки сообщений
@@ -107,12 +107,6 @@ private:
     
     typedef std::map<std::string, thredList *> mapListsThreads;
     //!< Список списков потоков ("список списков", двоение - для множественного запуска)
-
-    typedef std::map<std::string, msgertype *> mapArgFunctions;
-    //!< Список аргументов для функций на запуск (сообщения)
-    // В списке лежат все "от", поток запускается для одного "от"
-    // Так же отвечает за хранение всех сообщений.
-
     
     mapListsThreads m_threads; // Список потоков
     mapThreadFunctions m_toRun;

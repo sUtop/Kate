@@ -42,7 +42,7 @@ dispatcher::dispatcher(inputString to_start)
 
     // Проверка подключенных модулей
     for(auto itM = vectMessages.begin(); itM != vectMessages.end(); ++itM) {
-        if(mapFunction[itM->frommod].correct == 1 &&
+        if((mapFunction[itM->frommod].correct == 1 || itM->frommod == "msg")&&
            mapFunction[itM->tomod].correct == 1) {
             //            if() msgertype * msgt = new msgertype();
             Messager * mess = new Messager(itM->nammes);
@@ -66,10 +66,24 @@ dispatcher::dispatcher(inputString to_start)
 
             m_argsToRun[mess->from]->operator[]( itM->nammes ) = mess;
             m_argsToRun[mess->to]->operator[]( itM->nammes ) = mess;
+            std::cout << "dispatcher:: message from module :" << mess->from << ": to module :" << mess->to << ": with name :" << itM->nammes << ": added\n";
+
         }
     }
 
 
+    // Создание отдельного потока для месаджера
+//     msgth;    
+//typedef void (*start_function)(msgertype *);
+    
+//    typedef void (msg::* msgfun)(mapArgFunctions *);
+//    typedef void (*msgfun)(mapArgFunctions *);
+    //    void start(mapArgFunctions * messagelist);
+//    msgfun msgst = &msg_start;
+    void (* msgst)(mapArgFunctions *) = &(msg_start);
+    std::thread * msgth = new std::thread(msgst,&m_argsToRun);
+    msgth->detach();
+    
     std::cout << " Num find Modules  = " << mapFunction.size() << "\n";
     // Заполнение списка потоков
     for(auto itT = mapFunction.begin(); itT != mapFunction.end(); ++itT) {
@@ -110,57 +124,15 @@ int dispatcher::start()
         }
     }
 
+
     for(auto tR = m_toRun.begin(); tR != m_toRun.end(); ++tR) { // Запуск модулей в главном потоке
         auto run_tmp = tR->second;
         std::cout << " Try to run    " << tR->first << "  runModule \n";
         ( *run_tmp )( m_argsToRun[tR->first] );
     };
-
+    
     return 0;
 };
-
-/*
-//!/bin/bahs $> g++ -ldl --std=c++11 -fPIC -Wall -g -lpthread test.cpp 
-
-#include <dlfcn.h> // ! dlopen и подобные
-#include <stdio.h>
-
-#include <iostream>
-#include <mutex>
-#include <thread>
-
-int main(int argc, char *argv[]) {
-
-        std::cout << "Usage ./a.out libsmt.so namefun \n";
-        if(argc < 3) {
-                return -1;
-        }
-        void *handle = dlopen(argv[1],RTLD_NOW);//RTLD_LAZY);
-
-        std::cout << " dlopen " << argv[1] << " opened with code " << handle << " \n";
-        void *f = dlsym(handle,argv[2]);
-
-        std::cout << " dlsym " << argv[2] << " opened with code " << f << " \n";
-        typedef void (*funct) (char);
-
-        void (*fun)(char);
-        fun  =  reinterpret_cast<funct> (f)  ;
-
-        std::thread* runmodule = nullptr;
-        runmodule = new std::thread(fun,'a'); 
-
-//      runmodule->join();
-        runmodule->detach();
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-
-        dlclose(handle);
-        return 0;
-};
-
- 
- */
-
 
 int dispatcher::addThread(dispatcher::returnMod &mod)
 {
@@ -173,8 +145,8 @@ int dispatcher::addThread(dispatcher::returnMod &mod)
 
     std::cout << "      Libname " << libname << "\n";
 
-    // Если запуск происходит в отдельном потоке
-    if(mod.number > 0) {
+    if(mod.correct > 0) 
+    {
         void * f = platform::OpenLibrary(libname);
 
         if(f == nullptr) return -1;
@@ -189,6 +161,7 @@ int dispatcher::addThread(dispatcher::returnMod &mod)
                 std::cout << " New threadList with name " << mod.namemod << "  Created! \n";
             }
 
+    // Если запуск происходит в отдельном потоке
             if(mod.number > 0) {
                 for(int i = 0; i < mod.number; ++i) {
                     runmodule = new std::thread(init_func, m_argsToRun[mod.namemod]);
@@ -199,6 +172,9 @@ int dispatcher::addThread(dispatcher::returnMod &mod)
             else {
                 //typedef std::map<std::string, start_function> mapThreadFunctions;
                 m_toRun[mod.namemod] = init_func;
+                
+            std::cout << " New module to run " << mod.namemod << "  Created! \n";
+                
                 // ! Функция на запуск! 
             }
 

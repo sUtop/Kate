@@ -28,7 +28,7 @@ namespace platform {
             if (!handle) return nullptr;
             LoadedLibrary[libname] = handle;
         } else std::cout << " Ha ! I found your lib - " << libname << " it is on " << LoadedLibrary[libname] << "\n";
-        
+
 
         void * f = dlsym(LoadedLibrary[libname], "start");
         std::cout << " dlsym " << "start" << " opened with code " << f << " \n";
@@ -36,7 +36,7 @@ namespace platform {
     }
 
     void closeAll() {
-        for(auto it = LoadedLibrary.begin(); it != LoadedLibrary.end(); ++it) {
+        for (auto it = LoadedLibrary.begin(); it != LoadedLibrary.end(); ++it) {
             std::cout << "closed Library " << it->first << " \n ";
             dlclose(it->second);
         }

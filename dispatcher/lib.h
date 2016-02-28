@@ -60,6 +60,7 @@ struct Message {
 };
 
 //!< Одна очередь сообщений между двумя потоками
+
 class Messager {
     std::mutex lock; // локатор 
     std::queue<Message> list; // очередь
@@ -81,7 +82,13 @@ public:
 
 
 typedef std::map<std::string, Messager*> msgertype;
-//!< Все очереди сообщений ко всем модулям
+//!< Все очереди сообщений к одному модулю
+
+typedef std::map<std::string, msgertype *> mapArgFunctions;
+//!< Список аргументов для функций на запуск (сообщения)
+// В списке лежат все "от", поток запускается для одного "от"
+// Так же отвечает за хранение всех сообщений.
+
 
 typedef void (*start_function)(msgertype *);
 //!< Указатель на функцию для запуска (start_function) передается 
